@@ -2,7 +2,7 @@
 
 # 🚀 Celeb Locket Tracker
 
-**Hệ thống tự động hóa tốc độ cao chuyên giám sát đa nền tảng, phân tích ngôn ngữ tự nhiên và săn lùng đặc quyền Locket VIP từ các Celeb theo thời gian thực.**
+**Hệ thống giám sát mạng xã hội và tự động săn slot Locket Celeb theo thời gian thực.**
 
 ![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white)
 ![Puppeteer](https://img.shields.io/badge/Puppeteer-Browser_Automation-00D8A2?logo=puppeteer&logoColor=black)
