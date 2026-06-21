@@ -550,6 +550,7 @@ async function main() {
   }
 
   if (!DRY_RUN) {
+    celebs.forEach(c => delete c.auto_add_results);
     writeJsonFile('celebs.json', celebs);
     writeJsonFile('scan_state.json', scanState);
     logSuccess('Đã lưu celebs.json và scan_state.json');
