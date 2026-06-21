@@ -1,7 +1,7 @@
 {
-  "name": "celeb-Celeb-Tracker-tracker",
+  "name": "Celeb-Tracker",
   "version": "1.0.0",
-  "description": "GitHub Action bot tự động quét Threads @Celeb-Trackercameravn để theo dõi celeb mới trên Celeb-Tracker",
+  "description": "GitHub Action bot tự động quét Threads @App Target để theo dõi celeb mới trên Celeb Tracker",
   "main": "src/tracker.js",
   "scripts": {
     "start": "node src/tracker.js",

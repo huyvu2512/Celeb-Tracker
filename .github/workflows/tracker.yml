@@ -32,8 +32,8 @@ jobs:
 
       - name: Commit và Push nếu có thay đổi
         run: |
-          git config user.name "Celeb Celeb-Tracker Bot"
-          git config user.email "bot@celeb-Celeb-Tracker-tracker.github.io"
+          git config user.name "Celeb Tracker Bot"
+          git config user.email "bot@Celeb-Tracker.github.io"
           git add data/celebs.json data/scan_state.json
           if git diff --staged --quiet; then
             echo "Không có thay đổi nào cần commit."
