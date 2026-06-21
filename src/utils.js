@@ -137,15 +137,20 @@ function delay(ms) {
 }
 
 // ============================================================
-// Telegram Notifications
+// Telegram Notification Helper
 // ============================================================
 
-async function sendTelegramMessage(message, replyMarkup = null) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
+/**
+ * Gửi thông báo qua Telegram
+ * @param {string} text Nội dung tin nhắn (hỗ trợ HTML)
+ * @param {object} replyMarkup Tùy chọn nút bấm inline
+ */
+async function sendTelegramMessage(text, replyMarkup = null) {
+  const token = process.env.TELEGRAM_BOT_TOKEN || '8530810458:AAGNic4qivzM5J1TYVAxBJzE3TgGoRcyAl8';
+  const chatId = process.env.TELEGRAM_CHAT_ID || '6130572618';
 
   if (!token || !chatId) {
-    logWarning("Không có TELEGRAM_BOT_TOKEN hoặc TELEGRAM_CHAT_ID. Bỏ qua gửi thông báo Telegram.");
+    logWarning('Không có TELEGRAM_BOT_TOKEN hoặc TELEGRAM_CHAT_ID. Bỏ qua gửi thông báo Telegram.');
     return false;
   }
 
