@@ -1,5 +1,5 @@
 {
-  "last_scan": "2026-06-21T07:36:10.506Z",
+  "last_scan": "2026-06-21T07:45:34.495Z",
   "last_ig_scan": null,
   "last_ig_scan_signature": null,
   "scanned_posts": {
@@ -8,11 +8,11 @@
       "scanned_at": "2026-06-21T06:27:21.413Z"
     },
     "DZykfJGmAm1": {
-      "resolved": false,
+      "resolved": true,
       "scanned_at": "2026-06-21T07:36:04.569Z"
     },
     "DZy2nfoGNqs": {
-      "resolved": false,
+      "resolved": true,
       "scanned_at": "2026-06-21T07:36:07.303Z"
     },
     "DZxcrgRmJYr": {
@@ -20,7 +20,7 @@
       "scanned_at": "2026-06-21T06:27:33.048Z"
     },
     "DZyj3orGOe8": {
-      "resolved": false,
+      "resolved": true,
       "scanned_at": "2026-06-21T07:36:10.506Z"
     },
     "DZxLLgDGFHm": {
