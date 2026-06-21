@@ -38,7 +38,7 @@ async function resolveAppLink(appCamUrl) {
 
     // --- Trích xuất invite URL ---
     // Tìm trong hàm openDynamicLink() hoặc copyTextToClipboard()
-    // Pattern: locket.camera%2Finvites%2F{TOKEN}%3Ftype%3DUsernameLink
+    // Pattern: app.camera%2Finvites%2F{TOKEN}%3Ftype%3DUsernameLink
     const encodedTarget = Buffer.from('bG9ja2V0LmNhbWVyYQ==', 'base64').toString();
     const inviteMatch = html.match(new RegExp(`${encodedTarget}%2Finvites%2F([a-zA-Z0-9]+)%3Ftype%3DUsernameLink`));
     let inviteUrl = null;

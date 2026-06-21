@@ -1,5 +1,5 @@
 /**
- * utils.js — Hàm tiện ích cho Celeb Locket Tracker
+ * utils.js — Hàm tiện ích cho Celeb Tracker
  */
 
 const path = require('path');
