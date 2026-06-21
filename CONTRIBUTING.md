@@ -16,7 +16,7 @@ Hãy chắc chắn bạn đã cung cấp:
 
 ## ✨ Yêu cầu Tính Năng Mới (Feature Requests)
 
-Nếu bạn có ý tưởng tuyệt vời để cải thiện dự án (ví dụ: quét thêm Tiktok, Facebook, v.v.), hãy tạo một Issue với label `enhancement` hoặc `feature`. Trình bày rõ ràng về ý tưởng và lý do tại sao nó lại hữu ích.
+Nếu bạn có ý tưởng tuyệt vời để cải thiện dự án, hãy tạo một Issue với label `enhancement` hoặc `feature`. Trình bày rõ ràng về ý tưởng và lý do tại sao nó lại hữu ích.
 
 ## 🛠 Đóng Góp Code (Pull Requests)
 
@@ -34,7 +34,7 @@ Nếu bạn có ý tưởng tuyệt vời để cải thiện dự án (ví dụ
    ```
 5. Commit thay đổi với thông điệp (commit message) rõ ràng:
    ```bash
-   git commit -m "Thêm tính năng quét Locket qua bình luận Tiktok"
+   git commit -m "Thêm tính năng quét Locket qua bình luận X"
    ```
 6. Push branch lên fork của bạn:
    ```bash

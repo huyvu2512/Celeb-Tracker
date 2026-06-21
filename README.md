@@ -49,7 +49,7 @@
 
 ## 🛠 Cấu trúc dự án
 
-\`\`\`text
+```text
 📦 Celeb-Locket-Tracker
  ┣ 📂 data                  # Thư mục lưu trữ database JSON (được cập nhật tự động bởi Github Action)
  ┃ ┣ 📜 celebs.json         # Danh sách link Locket của các Celeb đã săn được
@@ -64,35 +64,35 @@
  ┃ ┗ 📜 tracker.yml         # File cấu hình tự động hoá của Github Actions (CI/CD)
  ┣ 📜 package.json
  ┗ 📜 README.md
-\`\`\`
+```
 
 ---
 
 ## 💻 Hướng dẫn chạy thử nội bộ (Local)
 
 1. Tải dự án về máy:
-\`\`\`bash
+```bash
 git clone https://github.com/huyvu2512/Celeb-Locket-Tracker.git
 cd Celeb-Locket-Tracker
-\`\`\`
+```
 
 2. Cài đặt các thư viện cần thiết:
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 3. Chạy hệ thống giả lập (không ghi đè file lưu trữ):
-\`\`\`bash
+```bash
 node src/tracker.js --dry-run
-\`\`\`
+```
 
 ---
 
 ## 🤝 Đóng góp (Contributing)
 
-Mọi đóng góp nhằm tối ưu hóa bộ code, bóc tách API sâu hơn hoặc phát triển thêm các nền tảng quét mới (như Facebook, TikTok) đều được hoan nghênh. 
+Mọi đóng góp nhằm tối ưu hóa bộ code, bóc tách API sâu hơn hoặc phát triển thêm các nền tảng quét mới đều được hoan nghênh. 
 
-Hãy thoải mái tạo Pull Request hoặc mở một Issue mới nếu bạn phát hiện lỗi hoặc có tính năng hay muốn thêm vào. Vui lòng tham khảo file \`CONTRIBUTING.md\` để biết thêm chi tiết.
+Hãy thoải mái tạo Pull Request hoặc mở một Issue mới nếu bạn phát hiện lỗi hoặc có tính năng hay muốn thêm vào. Vui lòng tham khảo file `CONTRIBUTING.md` để biết thêm chi tiết.
 
 ---
 
