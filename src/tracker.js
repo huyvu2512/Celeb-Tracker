@@ -487,16 +487,6 @@ async function main() {
       msg += `⏱ <b>Thời gian:</b> ${timeStr}\n`;
       msg += `📍 <b>Nguồn:</b> ${sourceTextStr}\n`;
       
-      if (autoAddResults) {
-        if (autoAddResults.success.includes(c.username)) {
-           msg += `🤖 <b>Bot Auto-Add:</b> ✅ Đã kết bạn thành công!\n`;
-        } else if (autoAddResults.full.includes(c.username)) {
-           msg += `🤖 <b>Bot Auto-Add:</b> ❌ Thất bại (Locket báo Full 100%)\n`;
-        } else if (autoAddResults.error.includes(c.username)) {
-           msg += `🤖 <b>Bot Auto-Add:</b> ⚠️ Gặp lỗi tự động thêm bạn\n`;
-        }
-      }
-      
       const replyMarkup = {
         inline_keyboard: [
           [{ text: `➕ Kết bạn với ${c.display_name}`, url: c.invite_url }]
@@ -505,6 +495,17 @@ async function main() {
       
       await sendTelegramMessage(msg, replyMarkup);
       await delay(500); // Tránh rate limit của Telegram khi gửi nhiều
+
+      if (autoAddResults && autoAddResults.success.includes(c.username)) {
+        let successMsg = `🤖 <b>AUTO ADD CELEB</b>\n\n`;
+        successMsg += `👤 <b>Tên:</b> ${c.display_name}\n`;
+        successMsg += `🆔 <b>Username:</b> @ ${c.username}\n`;
+        successMsg += `🎫 <b>Slot:</b> ${c.slot_limit ? c.slot_limit.toLocaleString('en-US') : 'Không rõ'}\n`;
+        successMsg += `✅ <b>Đã kết bạn thành công!</b>\n`;
+        successMsg += `⏱ <b>Thời gian:</b> ${timeStr}\n`;
+        await sendTelegramMessage(successMsg);
+        await delay(500);
+      }
     }
 
   } else {
