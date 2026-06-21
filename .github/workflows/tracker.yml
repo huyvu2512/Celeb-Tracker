@@ -1,4 +1,4 @@
-name: Celeb Tracker
+name: Cập nhật dữ liệu Celeb Tracker
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   track:
-    name: Cập nhập dữ liệu Celeb Tracker
+    name: Cập nhật dữ liệu Celeb Tracker
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cần quyền push commit
