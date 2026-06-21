@@ -12,81 +12,22 @@ const { THREADS_HEADERS, logInfo, logWarning, logError, delay } = require('./uti
 // Helpers nội bộ
 // ============================================================
 
-const fetch = require('node-fetch');
-const { HttpsProxyAgent } = require('https-proxy-agent');
-let proxyList = [];
-
 /**
- * Lấy danh sách free proxy từ proxyscrape
- */
-async function fetchProxyList() {
-  try {
-    logInfo('  Đang tải danh sách Free Proxy từ proxyscrape.com...');
-    const res = await fetch('https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=5000&country=all&ssl=yes&anonymity=all');
-    const text = await res.text();
-    proxyList = text.split('\r\n').filter(p => p.trim() !== '');
-    logInfo(`  Đã lấy được ${proxyList.length} proxies.`);
-  } catch (e) {
-    logWarning('  Không tải được proxy list, sẽ thử request trực tiếp.');
-  }
-}
-
-/**
- * Fetch HTML từ Threads với headers giả lập Chrome và proxy.
+ * Fetch HTML từ Threads với headers giả lập Chrome.
  * @param {string} url
  * @returns {Promise<string>} HTML string
  */
 async function fetchThreadsPage(url) {
-  if (proxyList.length === 0) {
-    await fetchProxyList();
+  const response = await fetch(url, {
+    headers: THREADS_HEADERS,
+    redirect: 'follow',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Fetch failed: ${response.status} ${response.statusText} for ${url}`);
   }
 
-  let retries = 3;
-  while (retries > 0) {
-    let proxyUrl = null;
-    let agent = null;
-    
-    if (proxyList.length > 0) {
-      // Chọn ngẫu nhiên 1 proxy
-      const randomIndex = Math.floor(Math.random() * proxyList.length);
-      const proxyIp = proxyList[randomIndex];
-      proxyUrl = `http://${proxyIp}`;
-      agent = new HttpsProxyAgent(proxyUrl);
-      logInfo(`  Thử fetch với proxy ${proxyIp} (Còn ${retries} lượt thử)...`);
-    } else {
-      logInfo(`  Thử fetch trực tiếp không qua proxy (Còn ${retries} lượt thử)...`);
-    }
-
-    try {
-      const response = await fetch(url, {
-        headers: THREADS_HEADERS,
-        agent: agent,
-        redirect: 'follow',
-        timeout: 10000 // 10 giây timeout cho free proxy
-      });
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          logWarning(`  Proxy ${proxyUrl || 'Direct'} bị 429 Too Many Requests.`);
-        } else {
-          logWarning(`  Fetch failed: ${response.status} ${response.statusText}`);
-        }
-        throw new Error(`Status ${response.status}`);
-      }
-
-      return await response.text();
-    } catch (e) {
-      logWarning(`  Lỗi khi dùng proxy ${proxyUrl || 'Direct'}: ${e.message}`);
-      // Xóa proxy hỏng khỏi list
-      if (proxyUrl) {
-        proxyList = proxyList.filter(p => `http://${p}` !== proxyUrl);
-      }
-      retries--;
-      if (retries === 0) {
-        throw new Error(`Fetch failed after 3 retries for ${url}`);
-      }
-    }
-  }
+  return response.text();
 }
 
 /**
