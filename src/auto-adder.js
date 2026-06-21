@@ -41,6 +41,7 @@ async function autoAddFriends(newCelebs) {
     logInfo('🌐 Truy cập trang đăng nhập locket-dio.com...');
     await page.goto('https://locket-dio.com/login', { waitUntil: 'domcontentloaded' });
 
+    await page.waitForSelector('input[type="email"], input[placeholder*="email" i]', { timeout: 15000 });
     const emailInput = await page.$('input[type="email"]') || await page.$('input[placeholder*="email" i]');
     if (emailInput) {
       await emailInput.type(email);
