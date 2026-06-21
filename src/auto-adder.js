@@ -134,13 +134,19 @@ async function autoAddFriends(newCelebs) {
           logInfo(`❌ ${celeb.username} Đã FULL bạn (Nút bị mờ).`);
           results.full.push(celeb.username);
         } else {
-          await page.evaluate(() => {
-            const btns = Array.from(document.querySelectorAll('button'));
-            const btn = btns.find(b => b.textContent.includes('Theo dõi') && b.offsetParent !== null);
-            if (btn) {
-               btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+          const followBtn = await page.$('button.bg-yellow-500');
+          if (followBtn) {
+            const box = await followBtn.boundingBox();
+            if (box) {
+              const x = box.x + box.width / 2;
+              const y = box.y + box.height / 2;
+              await page.mouse.move(x, y);
+              await new Promise(r => setTimeout(r, 100));
+              await page.mouse.down();
+              await new Promise(r => setTimeout(r, 50));
+              await page.mouse.up();
             }
-          });
+          }
 
           await page.waitForFunction(() => {
             return document.body.textContent.includes('Đang chờ chấp nhận');
