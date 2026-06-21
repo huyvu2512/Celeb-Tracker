@@ -56,6 +56,10 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames)
     if (isFirstRun) {
       logInfo('⚠️ Dữ liệu quét rỗng (First Run). Đang kích hoạt chế độ FULL SCAN bằng Puppeteer...');
       profilePosts = await fetchAllProfilePostsViaPuppeteer(TARGET_USERNAME);
+      if (!profilePosts || profilePosts.length === 0) {
+        logWarning('⚠️ Puppeteer không lấy được bài viết (có thể bị chặn). Đang dùng fallback sang API quét thông thường...');
+        profilePosts = await fetchProfilePosts(TARGET_USERNAME);
+      }
     } else {
       profilePosts = await fetchProfilePosts(TARGET_USERNAME);
     }
