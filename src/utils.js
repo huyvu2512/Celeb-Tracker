@@ -38,16 +38,18 @@ function extractAppCamLinks(text) {
   const matches = [];
 
   // 1. Dạng link ngắn: locket.cam/[username]
-  const regex1 = new RegExp(`https?://${Buffer.from('bG9ja2V0LmNhbQ==', 'base64').toString()}/([a-zA-Z0-9_.]+)`, 'gi');
+  const regex1 = new RegExp(`(?:https?://)?${Buffer.from('bG9ja2V0LmNhbQ==', 'base64').toString()}/([a-zA-Z0-9_.]+)`, 'gi');
   let match;
   while ((match = regex1.exec(text)) !== null) {
-    matches.push(match[0]);
+    const url = match[0].startsWith('http') ? match[0] : `https://${match[0]}`;
+    matches.push(url);
   }
 
   // 2. Dạng link trực tiếp: locket.camera/invites/[token]?type=UsernameLink
-  const regex2 = new RegExp(`https?://${Buffer.from('bG9ja2V0LmNhbWVyYQ==', 'base64').toString()}/invites/([a-zA-Z0-9_]+)(\\?type=UsernameLink)?`, 'gi');
+  const regex2 = new RegExp(`(?:https?://)?${Buffer.from('bG9ja2V0LmNhbWVyYQ==', 'base64').toString()}/invites/([a-zA-Z0-9_]+)(\\?type=UsernameLink)?`, 'gi');
   while ((match = regex2.exec(text)) !== null) {
-    matches.push(match[0]);
+    const url = match[0].startsWith('http') ? match[0] : `https://${match[0]}`;
+    matches.push(url);
   }
 
   return [...new Set(matches)]; // Loại bỏ trùng lặp
@@ -175,7 +177,7 @@ async function sendTelegramMessage(text, replyMarkup = null) {
       parse_mode: 'HTML',
       disable_web_page_preview: true
     };
-    
+
     if (replyMarkup) {
       payload.reply_markup = replyMarkup;
     }
@@ -193,7 +195,7 @@ async function sendTelegramMessage(text, replyMarkup = null) {
       logError(`Lỗi khi gửi Telegram: ${data.description}`);
       return false;
     }
-    
+
     logSuccess("Đã gửi thông báo Telegram thành công!");
     return true;
   } catch (error) {
@@ -208,21 +210,21 @@ function extractDropTime(text, takenAtMs = Date.now()) {
 
   const timeRegex = /(?:lúc|vào|khoảng|tới)?\s*(\d{1,2})(?:h|g|:)(\d{2})?\s*(sáng|trưa|chiều|tối)?/gi;
   let matches = [...text.matchAll(timeRegex)];
-  
+
   if (matches.length === 0) return null;
 
   const bestMatch = matches[matches.length - 1];
 
   let hour = parseInt(bestMatch[1], 10);
   const minute = bestMatch[2] ? parseInt(bestMatch[2], 10) : 0;
-  const period = bestMatch[3] || ''; 
+  const period = bestMatch[3] || '';
 
   if (period === 'chiều' || period === 'tối') {
     if (hour < 12) hour += 12;
   } else if (period === 'sáng') {
     if (hour === 12) hour = 0;
   } else if (period === 'trưa') {
-    if (hour < 12 && hour >= 1) hour += 12; 
+    if (hour < 12 && hour >= 1) hour += 12;
   } else {
     if (hour >= 1 && hour <= 11) {
       if (!text.includes('sáng')) {
@@ -236,15 +238,15 @@ function extractDropTime(text, takenAtMs = Date.now()) {
     const baseDateVn = new Date(takenAtMs + 7 * 3600 * 1000).toISOString().split('T')[0];
     const isoStr = `${baseDateVn}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00+07:00`;
     const d = new Date(isoStr);
-    
+
     // Nếu giờ trích xuất < giờ đăng bài (kèm sai số 2h), nghĩa là họ đang nói đến ngày mai
     if (d.getTime() < takenAtMs - 2 * 60 * 60 * 1000) {
-       d.setDate(d.getDate() + 1);
+      d.setDate(d.getDate() + 1);
     }
-    
+
     // Nếu giờ vàng ĐÃ TRÔI QUA so với HIỆN TẠI (VD bài hôm qua nói 21h hôm qua), thì bỏ qua luôn!
     if (d.getTime() <= Date.now()) {
-       return null;
+      return null;
     }
 
     return d.toISOString();

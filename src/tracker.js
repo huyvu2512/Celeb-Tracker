@@ -108,7 +108,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   const currentPostCodes = new Set(profilePosts.map(p => p.code));
   for (const code in scanState.scanned_posts) {
     if (scanState.scanned_posts[code].resolved === false && !currentPostCodes.has(code)) {
-       scanState.scanned_posts[code].resolved = true;
+      scanState.scanned_posts[code].resolved = true;
     }
   }
 
@@ -123,7 +123,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
         const latestBackupPost = backupPosts[0];
         latestBackupPost.reason = 'BACKUP PAGE (Mới nhất)';
         latestBackupPost.author = BACKUP_USERNAME; // Đánh dấu author để fetch đúng url
-        
+
         const isResolved = scanState.scanned_posts[latestBackupPost.code] && scanState.scanned_posts[latestBackupPost.code].resolved;
         if (!isResolved) {
           if (!scanState.scanned_posts[latestBackupPost.code]) {
@@ -190,7 +190,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
 
     if (foundTargets.length === 0) {
       logWarning(`  Không tìm thấy link App.cam trong post ${post.code}`);
-      
+
       // NẾU KHÔNG CÓ LINK CELEB_TRACKER -> TÌM GIỜ VÀNG TRONG CAPTION!
       if (!scanState.scanned_posts[post.code]?.resolved) {
         const postTimeMs = (postDetails.taken_at || 0) * 1000;
@@ -202,18 +202,18 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
             scanState.sniper_target_time = dropTime;
             scanState.sniper_trigger_code = post.code;
             scanState.sniper_completed = false; // Reset cờ hoàn thành
-            
+
             logSuccess(`🎯 LÊN LỊCH SNIPER MODE: Phát hiện thông báo giờ vàng: ${dropTime}`);
-            
+
             const timeStr = new Intl.DateTimeFormat('vi-VN', {
               timeZone: 'Asia/Ho_Chi_Minh',
               hour: '2-digit', minute: '2-digit',
               day: '2-digit', month: '2-digit', year: 'numeric'
             }).format(new Date(dropTime));
-            
+
             let msg = `<b>CHUẨN BỊ MỞ SLOT!</b>\n\n`;
             msg += `⏱ <b>Thời gian dự kiến:</b> ${timeStr}\n`;
-            
+
             const postUrl = `https://www.threads.net/@${TARGET_USERNAME}/post/${post.code}`;
             const replyMarkup = {
               inline_keyboard: [
@@ -260,7 +260,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
       let autoAddResults = null;
       if (!isKnown && !DRY_RUN) {
         if (global.autoAddCount === undefined) global.autoAddCount = 0;
-        
+
         if (global.autoAddCount < 2) {
           logSuccess(`🚀 [SPEED ADD] Gọi Auto-Add ngay lập tức cho @${username} (Bất chấp 404)!`);
           const { autoAddFriends } = require('./auto-adder');
@@ -281,7 +281,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
 
         if (!resolved) {
           logWarning(`  Không resolve được ${appUrl} (Lỗi 404 hoặc Timeout)`);
-          
+
           if (!isKnown) {
             logWarning(`  ⚠️ CELEB MỚI NHƯNG LỖI 404: @${username}. Đang lưu tạm để add tự động và lấy link sau.`);
             const displayName = threadsDisplayName || username;
@@ -317,7 +317,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
           existingCeleb.invite_token = inviteToken;
           existingCeleb.slot_limit = resolved.slot_limit;
           existingCeleb.display_name = threadsDisplayName || resolved.display_name || username;
-          
+
           newlyFoundCelebs.push({ ...existingCeleb, is_link_recovery: true });
           newCelebsFound++;
           anyResolved = true;
@@ -357,7 +357,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
             logSuccess(`  🆙 TĂNG SLOT: @${username} mở thêm slot (${existingCeleb.slot_limit} -> ${resolved.slot_limit})`);
             existingCeleb.slot_limit = resolved.slot_limit;
             existingCeleb.found_at = new Date().toISOString();
-            
+
             newlyFoundCelebs.push({ ...existingCeleb, is_update: true });
             newCelebsFound++;
           } else {
@@ -381,13 +381,13 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   if (PRE_EXISTING_LINK && !scanState.pre_existing_resolved && newCelebsFound === 0) {
     const username = extractUsernameFromAppUrl(PRE_EXISTING_LINK) || 'unknown_pre_existing';
     const isKnownAndResolved = celebs.some(c => c.username === username && c.invite_url);
-    
+
     if (!isKnownAndResolved) {
       logInfo(`[Luồng 3] Đang rình Link có sẵn từ trước: ${PRE_EXISTING_LINK}`);
-      
+
       const currentDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
       if (currentDelay > 0) await delay(currentDelay);
-      
+
       const resolved = await resolveAppLink(PRE_EXISTING_LINK);
       if (resolved) {
         // Auto add thần tốc (chỉ chạy nếu lấy được username từ app.cam)
@@ -395,16 +395,16 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
         if (username !== 'unknown_pre_existing' && !DRY_RUN) {
           if (global.autoAddCount === undefined) global.autoAddCount = 0;
           if (global.autoAddCount < 2) {
-             logSuccess(`🚀 [SPEED ADD] Gọi Auto-Add ngay lập tức cho Link Có Sẵn (@${username})!`);
-             const { autoAddFriends } = require('./auto-adder');
-             autoAddResults = await autoAddFriends([{ username }]);
-             global.autoAddCount++;
+            logSuccess(`🚀 [SPEED ADD] Gọi Auto-Add ngay lập tức cho Link Có Sẵn (@${username})!`);
+            const { autoAddFriends } = require('./auto-adder');
+            autoAddResults = await autoAddFriends([{ username }]);
+            global.autoAddCount++;
           }
         }
 
         const inviteTokenMatch = resolved.invite_url.match(/invites\/([a-zA-Z0-9]+)/);
         const inviteToken = inviteTokenMatch ? inviteTokenMatch[1] : null;
-        
+
         const newCeleb = {
           username: username !== 'unknown_pre_existing' ? username : (resolved.display_name || 'unknown'),
           display_name: resolved.display_name || username,
@@ -422,7 +422,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
         newlyFoundCelebs.push(newCeleb);
         if (username !== 'unknown_pre_existing') knownUsernames.add(username);
         newCelebsFound++;
-        
+
         scanState.pre_existing_resolved = true;
         logSuccess(`  🎉 CELEB MỚI TỪ LUỒNG 3: ${resolved.invite_url}`);
       } else {
@@ -437,12 +437,12 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   // 5b. Quét Instagram Stories (Nếu có cấu hình RapidAPI)
   // ----------------------------------------------------------
   const rapidApiKey = process.env.RAPIDAPI_KEY;
-  
+
   // Tính giờ Việt Nam (UTC+7)
   const nowUtc = new Date();
   const vnTime = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000);
   const vnHour = vnTime.getUTCHours();
-  
+
   // Tạo signature để ghi nhớ (tránh quét nhiều lần trong cùng 1 tiếng)
   const dateSignature = `${vnTime.getUTCFullYear()}-${vnTime.getUTCMonth()}-${vnTime.getUTCDate()}-${vnHour}`;
 
@@ -456,112 +456,112 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
       log('='.repeat(60));
       try {
         const { fetchInstagramStories } = require('./insta-scraper');
-      // Chú ý: Insta dùng appcamera, Threads dùng appcameravn
-      const stories = await fetchInstagramStories(Buffer.from('bG9ja2V0Y2FtZXJh', 'base64').toString(), rapidApiKey);
-      const storyLinks = [];
-      
-      for (const story of stories) {
-        // Chuyển toàn bộ object story thành chuỗi để quét link ở bất kỳ thuộc tính nào (sticker, cta, ...)
-        const storyText = JSON.stringify(story);
-        const links = extractAppCamLinks(storyText);
-        for (const url of links) {
-          storyLinks.push({
-            url,
-            sourceType: 'ig_story',
-            text: `IG_Story_${story.pk || 'unknown'}`
-          });
-        }
-      }
+        // Chú ý: Insta dùng appcamera, Threads dùng appcameravn
+        const stories = await fetchInstagramStories(Buffer.from('bG9ja2V0Y2FtZXJh', 'base64').toString(), rapidApiKey);
+        const storyLinks = [];
 
-      if (storyLinks.length > 0) {
-        logSuccess(`  Tìm thấy ${storyLinks.length} target link trong Instagram Stories`);
-        
-        for (const target of storyLinks) {
-          const { url: appUrl, sourceType, text: sourceText } = target;
-          const username = extractUsernameFromAppUrl(appUrl);
-          if (!username) continue;
-
-          let autoAddResults = null;
-          if (!knownUsernames.has(username) && !DRY_RUN) {
-            if (global.autoAddCount === undefined) global.autoAddCount = 0;
-            
-            if (global.autoAddCount < 2) {
-              logSuccess(`🚀 [SPEED ADD] Gọi Auto-Add ngay lập tức cho @${username} từ IG Story!`);
-              const { autoAddFriends } = require('./auto-adder');
-              autoAddResults = await autoAddFriends([{ username }]);
-              global.autoAddCount++;
-            } else {
-              logWarning(`⚠️ Đã đạt giới hạn Auto-Add (2 lần/run) để chống ban. Bỏ qua Auto-Add cho @${username}`);
-            }
+        for (const story of stories) {
+          // Chuyển toàn bộ object story thành chuỗi để quét link ở bất kỳ thuộc tính nào (sticker, cta, ...)
+          const storyText = JSON.stringify(story);
+          const links = extractAppCamLinks(storyText);
+          for (const url of links) {
+            storyLinks.push({
+              url,
+              sourceType: 'ig_story',
+              text: `IG_Story_${story.pk || 'unknown'}`
+            });
           }
-
-          await delay(REQUEST_DELAY_MS);
-          const resolved = await resolveAppLink(appUrl);
-          if (!resolved) continue;
-
-          const inviteTokenMatch = resolved.invite_url.match(/invites\/([^?]+)/);
-          const inviteToken = inviteTokenMatch ? inviteTokenMatch[1] : null;
-
-          if (knownUsernames.has(username)) {
-            const existingCeleb = celebs.find(c => c.username === username);
-            if (existingCeleb && resolved.slot_limit && existingCeleb.slot_limit && resolved.slot_limit > existingCeleb.slot_limit) {
-              logSuccess(`  🆙 TĂNG SLOT (IG Story): @${username} mở thêm slot (${existingCeleb.slot_limit} -> ${resolved.slot_limit})`);
-              existingCeleb.slot_limit = resolved.slot_limit;
-              existingCeleb.found_at = new Date().toISOString();
-              
-              newlyFoundCelebs.push({ ...existingCeleb, is_update: true });
-              newCelebsFound++;
-            } else {
-              logInfo(`  Celeb @${username} (từ IG Story) đã tồn tại, bỏ qua.`);
-            }
-            continue;
-          }
-
-          // Story thường không có caption nên lấy display_name trực tiếp từ app page
-          const displayName = resolved.display_name || username;
-
-          const newCeleb = {
-            username: username,
-            display_name: displayName,
-            app_cam_url: appUrl,
-            invite_url: resolved.invite_url,
-            invite_token: inviteToken,
-            slot_limit: resolved.slot_limit,
-            found_at: new Date().toISOString(),
-            source_post_code: sourceText,
-            source_type: sourceType,
-            auto_add_results: autoAddResults,
-          };
-
-          celebs.push(newCeleb);
-          newlyFoundCelebs.push(newCeleb);
-          knownUsernames.add(username);
-          newCelebsFound++;
-
-          logSuccess(`  🎉 CELEB MỚI (IG Story): @${username} (${displayName})`);
-          logSuccess(`     Invite: ${resolved.invite_url}`);
         }
-      } else {
-        logInfo('  Không tìm thấy link App.cam nào trong Instagram Stories.');
+
+        if (storyLinks.length > 0) {
+          logSuccess(`  Tìm thấy ${storyLinks.length} target link trong Instagram Stories`);
+
+          for (const target of storyLinks) {
+            const { url: appUrl, sourceType, text: sourceText } = target;
+            const username = extractUsernameFromAppUrl(appUrl);
+            if (!username) continue;
+
+            let autoAddResults = null;
+            if (!knownUsernames.has(username) && !DRY_RUN) {
+              if (global.autoAddCount === undefined) global.autoAddCount = 0;
+
+              if (global.autoAddCount < 2) {
+                logSuccess(`🚀 [SPEED ADD] Gọi Auto-Add ngay lập tức cho @${username} từ IG Story!`);
+                const { autoAddFriends } = require('./auto-adder');
+                autoAddResults = await autoAddFriends([{ username }]);
+                global.autoAddCount++;
+              } else {
+                logWarning(`⚠️ Đã đạt giới hạn Auto-Add (2 lần/run) để chống ban. Bỏ qua Auto-Add cho @${username}`);
+              }
+            }
+
+            await delay(REQUEST_DELAY_MS);
+            const resolved = await resolveAppLink(appUrl);
+            if (!resolved) continue;
+
+            const inviteTokenMatch = resolved.invite_url.match(/invites\/([^?]+)/);
+            const inviteToken = inviteTokenMatch ? inviteTokenMatch[1] : null;
+
+            if (knownUsernames.has(username)) {
+              const existingCeleb = celebs.find(c => c.username === username);
+              if (existingCeleb && resolved.slot_limit && existingCeleb.slot_limit && resolved.slot_limit > existingCeleb.slot_limit) {
+                logSuccess(`  🆙 TĂNG SLOT (IG Story): @${username} mở thêm slot (${existingCeleb.slot_limit} -> ${resolved.slot_limit})`);
+                existingCeleb.slot_limit = resolved.slot_limit;
+                existingCeleb.found_at = new Date().toISOString();
+
+                newlyFoundCelebs.push({ ...existingCeleb, is_update: true });
+                newCelebsFound++;
+              } else {
+                logInfo(`  Celeb @${username} (từ IG Story) đã tồn tại, bỏ qua.`);
+              }
+              continue;
+            }
+
+            // Story thường không có caption nên lấy display_name trực tiếp từ app page
+            const displayName = resolved.display_name || username;
+
+            const newCeleb = {
+              username: username,
+              display_name: displayName,
+              app_cam_url: appUrl,
+              invite_url: resolved.invite_url,
+              invite_token: inviteToken,
+              slot_limit: resolved.slot_limit,
+              found_at: new Date().toISOString(),
+              source_post_code: sourceText,
+              source_type: sourceType,
+              auto_add_results: autoAddResults,
+            };
+
+            celebs.push(newCeleb);
+            newlyFoundCelebs.push(newCeleb);
+            knownUsernames.add(username);
+            newCelebsFound++;
+
+            logSuccess(`  🎉 CELEB MỚI (IG Story): @${username} (${displayName})`);
+            logSuccess(`     Invite: ${resolved.invite_url}`);
+          }
+        } else {
+          logInfo('  Không tìm thấy link App.cam nào trong Instagram Stories.');
+        }
+      } catch (err) {
+        logError(`  Lỗi quét Instagram Stories: ${err.message}`);
+      } finally {
+        // Đánh dấu thời điểm quét IG mới nhất
+        scanState.last_ig_scan = new Date().toISOString();
+        scanState.last_ig_scan_signature = dateSignature;
       }
-    } catch (err) {
-      logError(`  Lỗi quét Instagram Stories: ${err.message}`);
-    } finally {
-      // Đánh dấu thời điểm quét IG mới nhất
-      scanState.last_ig_scan = new Date().toISOString();
-      scanState.last_ig_scan_signature = dateSignature;
+    } else {
+      log('');
+      logInfo(`⏳ Bỏ qua quét Instagram. Lịch quét mặc định: 0h, 6h, 12h, 18h VN (Hiện tại: ${vnHour}h).`);
     }
   } else {
     log('');
-    logInfo(`⏳ Bỏ qua quét Instagram. Lịch quét mặc định: 0h, 6h, 12h, 18h VN (Hiện tại: ${vnHour}h).`);
+    logInfo('ℹ️ Bỏ qua quét Instagram Stories vì không có RAPIDAPI_KEY trong environment.');
   }
-} else {
-  log('');
-  logInfo('ℹ️ Bỏ qua quét Instagram Stories vì không có RAPIDAPI_KEY trong environment.');
-}
 
   // ----------------------------------------------------------
-  
+
   return newCelebsFound;
 }
 
@@ -581,7 +581,7 @@ async function main() {
     last_ig_scan_signature: null,
     scanned_posts: {},
   });
-  
+
   // Đảm bảo scanned_posts luôn là object để tránh lỗi crash khi file JSON bị xóa trắng thành {}
   if (!scanState.scanned_posts) {
     scanState.scanned_posts = {};
@@ -602,22 +602,25 @@ async function main() {
     const now = Date.now();
     const timeDiff = targetTime - now;
 
-    // Nếu cách giờ G dưới 60 phút và chưa qua giờ G
-    if (timeDiff > 0 && timeDiff <= 60 * 60 * 1000) {
+    // Nếu cách giờ G dưới 15 phút và chưa qua giờ G
+    if (timeDiff > 0 && timeDiff <= 15 * 60 * 1000) {
       logInfo(`🎯 Sắp đến giờ G! Đang đợi ${Math.round(timeDiff / 1000 / 60)} phút nữa tới thời khắc vàng...`);
       await delay(timeDiff); // NGỦ ĐÔNG CHỜ ĐẾN GIỜ G
 
       logSuccess(`🔥 GIỜ G ĐÃ ĐIỂM! KÍCH HOẠT SNIPER MODE TRONG 60 PHÚT!`);
       const sniperEndTime = Date.now() + 60 * 60 * 1000;
-      
+
       while (Date.now() < sniperEndTime) {
         const minutesPassed = 60 - ((sniperEndTime - Date.now()) / (60 * 1000));
         const isFastMode = minutesPassed <= 10;
-        
-        logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((sniperEndTime - Date.now())/1000)}s) [FastMode: ${isFastMode}]`);
+
+        logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((sniperEndTime - Date.now()) / 1000)}s) [FastMode: ${isFastMode}]`);
         const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode, true);
-        if (newlyFoundCelebs.some(c => c.invite_url !== null)) {
-          logSuccess(`🎯 SNIPER THÀNH CÔNG! Đã lấy được link Invite! Kết thúc Sniper Mode.`);
+        const hasInviteUrl = newlyFoundCelebs.some(c => c.invite_url !== null);
+        const hasSpeedAddSuccess = newlyFoundCelebs.some(c => c.auto_add_results && (c.auto_add_results.success || c.auto_add_results.skipped || c.auto_add_results.full));
+
+        if (hasInviteUrl || hasSpeedAddSuccess) {
+          logSuccess(`🎯 SNIPER THÀNH CÔNG! Đã lấy được link Invite hoặc Auto-Add thành công! Kết thúc Sniper Mode.`);
           newCelebsFound += found;
           scanState.sniper_completed = true; // Đánh dấu hoàn thành
           break;
@@ -626,8 +629,7 @@ async function main() {
           newCelebsFound += found;
         }
         if (isFastMode) {
-          logInfo(`  -> [10p đầu] Chưa thấy link. Spam quét lại NGAY LẬP TỨC (delay 0.5s để chống block IP)...`);
-          await delay(500); // Thêm 500ms delay để tránh bị Cloudflare/Instagram ban IP vì request quá nhanh
+          logInfo(`  -> [10p đầu] Chưa thấy link. Spam quét lại NGAY LẬP TỨC...`);
         } else {
           logInfo(`  -> Chưa thấy link. Chờ 5 giây rồi quét lại...`);
           await delay(5000); // Rình 5 giây 1 lần
@@ -639,8 +641,8 @@ async function main() {
         scanState.sniper_completed = true;
       }
     } else if (timeDiff < 0 && timeDiff > -2 * 60 * 60 * 1000) {
-       // Nếu lỡ quá giờ 2 tiếng thì bỏ qua luôn (tránh kẹt)
-       scanState.sniper_completed = true;
+      // Nếu lỡ quá giờ 2 tiếng thì bỏ qua luôn (tránh kẹt)
+      scanState.sniper_completed = true;
     }
   }
 
@@ -659,7 +661,7 @@ async function main() {
     for (const c of newlyFoundCelebs) {
       // Chuyển đổi định dạng thời gian cho đẹp
       const d = new Date(c.found_at);
-      const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')} ${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+      const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')} ${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 
       let sourceTextStr = '';
       if (c.source_type === 'ig_story') sourceTextStr = 'Instagram (tin)';
@@ -676,13 +678,13 @@ async function main() {
       }
       msg += `⏱ <b>Thời gian:</b> ${timeStr}\n`;
       msg += `📍 <b>Nguồn:</b> ${sourceTextStr}\n`;
-      
+
       const replyMarkup = c.invite_url ? {
         inline_keyboard: [
           [{ text: `➕ Kết bạn với ${c.display_name}`, url: c.invite_url }]
         ]
       } : null;
-      
+
       await sendTelegramMessage(msg, replyMarkup);
       await delay(500); // Tránh rate limit của Telegram khi gửi nhiều
 
@@ -691,19 +693,19 @@ async function main() {
         successMsg += `👤 <b>Tên:</b> ${c.display_name}\n`;
         successMsg += `🆔 <b>Username:</b> @ ${c.username}\n`;
         successMsg += `🎫 <b>Slot:</b> ${c.slot_limit ? c.slot_limit.toLocaleString('en-US') : 'Không rõ'}\n`;
-        
+
         let shouldSend = false;
         if (c.auto_add_results.success && c.auto_add_results.success.includes(c.username)) {
-           successMsg += `✅ <b>Đã kết bạn thành công!</b>\n`;
-           shouldSend = true;
+          successMsg += `✅ <b>Đã kết bạn thành công!</b>\n`;
+          shouldSend = true;
         } else if (c.auto_add_results.full && c.auto_add_results.full.includes(c.username)) {
-           successMsg += `❌ <b>Thất bại (Hết Slot hoặc Xếp hàng)</b>\n`;
-           shouldSend = true;
+          successMsg += `❌ <b>Thất bại (Hết Slot hoặc Xếp hàng)</b>\n`;
+          shouldSend = true;
         } else if (c.auto_add_results.skipped && c.auto_add_results.skipped.includes(c.username)) {
-           successMsg += `⚠️ <b>Đã là Bạn bè từ trước!</b>\n`;
-           shouldSend = true;
+          successMsg += `⚠️ <b>Đã là Bạn bè từ trước!</b>\n`;
+          shouldSend = true;
         }
-        
+
         if (shouldSend) {
           successMsg += `⏱ <b>Thời gian:</b> ${timeStr}\n`;
           await sendTelegramMessage(successMsg);
