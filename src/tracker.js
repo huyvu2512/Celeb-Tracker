@@ -1,4 +1,4 @@
-/**
+Chạyca/**
  * tracker.js — Script điều phối chính cho Celeb App Tracker
  * 
  * Luồng chạy:
@@ -45,7 +45,7 @@ const DRY_RUN = process.argv.includes('--dry-run');
 // Logic chính
 // ============================================================
 
-async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames) {
+async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode = false) {
   let newCelebsFound = 0;
 
   // 2. Quét trang profile
@@ -125,7 +125,8 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames)
     log(`📋 Quét post [${post.reason}]: ${post.code}`);
     log(`   Caption: ${post.caption.substring(0, 100).replace(/\n/g, ' ')}...`);
 
-    await delay(REQUEST_DELAY_MS);
+    const currentDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
+    if (currentDelay > 0) await delay(currentDelay);
 
     let postDetails;
     try {
@@ -246,7 +247,8 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames)
 
       // Chỉ gọi request phân tích link nếu chưa có invite_url
       if (!isKnownAndResolved) {
-        await delay(REQUEST_DELAY_MS);
+        const currentDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
+        if (currentDelay > 0) await delay(currentDelay);
         const resolved = await resolveAppLink(appUrl);
 
         if (!resolved) {
@@ -522,8 +524,11 @@ async function main() {
       const sniperEndTime = Date.now() + 60 * 60 * 1000;
       
       while (Date.now() < sniperEndTime) {
-        logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((sniperEndTime - Date.now())/1000)}s)`);
-        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames);
+        const minutesPassed = 60 - ((sniperEndTime - Date.now()) / (60 * 1000));
+        const isFastMode = minutesPassed <= 10;
+        
+        logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((sniperEndTime - Date.now())/1000)}s) [FastMode: ${isFastMode}]`);
+        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode);
         if (newlyFoundCelebs.some(c => c.invite_url !== null)) {
           logSuccess(`🎯 SNIPER THÀNH CÔNG! Đã lấy được link Invite! Kết thúc Sniper Mode.`);
           newCelebsFound += found;
@@ -533,8 +538,7 @@ async function main() {
           logInfo(`⏳ Vừa bắt được Celeb mới nhưng bị 404. Tiếp tục Sniper Mode chờ link...`);
           newCelebsFound += found;
         }
-        const minutesPassed = 60 - ((sniperEndTime - Date.now()) / (60 * 1000));
-        if (minutesPassed <= 10) {
+        if (isFastMode) {
           logInfo(`  -> [10p đầu] Chưa thấy link. Spam quét lại NGAY LẬP TỨC...`);
         } else {
           logInfo(`  -> Chưa thấy link. Chờ 5 giây rồi quét lại...`);
