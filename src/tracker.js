@@ -96,11 +96,8 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
     } else if (state.resolved === false && post.code === latestPostCode) {
       // Chỉ quét lại BÀI GẦN NHẤT (nếu chưa tìm thấy link)
       postsToScan.push({ ...post, reason: 'QUÉT LẠI (BÀI MỚI NHẤT)' });
-    } else if (state.resolved === false && post.code === scanState.sniper_trigger_code) {
-      // LUÔN quét lại BÀI THÔNG BÁO GIỜ VÀNG
-      postsToScan.push({ ...post, reason: 'QUÉT LẠI (BÀI THÔNG BÁO)' });
     } else if (state.resolved === false) {
-      // Các bài cũ đã quét mà không có link -> Đánh dấu hoàn thành luôn để bỏ qua
+      // Các bài cũ đã quét mà không có link -> Đánh dấu hoàn thành luôn để bỏ qua (bao gồm cả bài thông báo cũ nếu có bài mới hơn)
       scanState.scanned_posts[post.code].resolved = true;
     }
     // else: đã quét và đã resolve → bỏ qua
