@@ -70,8 +70,14 @@
       "resolved": true
     },
     "DZ6jaijGEfy": {
+      "resolved": true
+    },
+    "DZ7DWNkggGS": {
       "resolved": false
     }
   },
-  "last_scan": "2026-06-23T04:15:32.643Z"
+  "last_scan": "2026-06-23T04:15:32.643Z",
+  "sniper_target_time": "2026-06-23T15:00:00.000Z",
+  "sniper_trigger_code": "DZ7DWNkggGS",
+  "sniper_completed": false
 }
