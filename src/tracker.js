@@ -1,4 +1,4 @@
-Chạyca/**
+/**
  * tracker.js — Script điều phối chính cho Celeb App Tracker
  * 
  * Luồng chạy:
