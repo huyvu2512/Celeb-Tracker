@@ -4,7 +4,7 @@
       "resolved": false
     },
     "DZ6jaijGEfy": {
-      "resolved": false
+      "resolved": true
     },
     "DZy5ChcmOVH": {
       "resolved": true
@@ -13,40 +13,40 @@
       "resolved": true
     },
     "DZyj3orGOe8": {
-      "resolved": false
+      "resolved": true
     },
     "DZxLLgDGFHm": {
       "resolved": true
     },
     "DZw2zH9mGU3": {
-      "resolved": false
+      "resolved": true
     },
     "DZw3JeGmFZd": {
-      "resolved": false
+      "resolved": true
     },
     "DZrs_SLmNh0": {
       "resolved": true
     },
     "DZrgWCUGO8K": {
-      "resolved": false
+      "resolved": true
     },
     "DZri64AGBYb": {
-      "resolved": false
+      "resolved": true
     },
     "DZhhQkjgmCu": {
-      "resolved": false
+      "resolved": true
     },
     "DZe73DmAnP8": {
       "resolved": true
     },
     "DZfQwvAmNlJ": {
-      "resolved": false
+      "resolved": true
     },
     "DZeuKBJmKGx": {
-      "resolved": false
+      "resolved": true
     },
     "DZaImSEmJED": {
-      "resolved": false
+      "resolved": true
     },
     "DZaG4xlGN27": {
       "resolved": true
@@ -55,11 +55,20 @@
       "resolved": true
     },
     "DZZydQognLx": {
-      "resolved": false
+      "resolved": true
     },
     "DZZyrFImB33": {
+      "resolved": true
+    },
+    "DZykfJGmAm1": {
+      "resolved": false
+    },
+    "DZy2nfoGNqs": {
       "resolved": false
     }
   },
-  "last_scan": "2026-06-23T10:11:11.969Z"
+  "last_scan": "2026-06-23T10:13:11.927Z",
+  "sniper_target_time": "2026-06-24T05:00:00.000Z",
+  "sniper_trigger_code": "DZy2nfoGNqs",
+  "sniper_completed": false
 }
