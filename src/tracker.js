@@ -164,30 +164,38 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames)
       
       // NẾU KHÔNG CÓ LINK CELEB_TRACKER -> TÌM GIỜ VÀNG TRONG CAPTION!
       if (!scanState.scanned_posts[post.code]?.resolved) {
-        const dropTime = extractDropTime(postDetails.caption || '');
-        if (dropTime && scanState.sniper_target_time !== dropTime) {
-          scanState.sniper_target_time = dropTime;
-          scanState.sniper_trigger_code = post.code;
-          scanState.sniper_completed = false; // Reset cờ hoàn thành
-          
-          logSuccess(`🎯 LÊN LỊCH SNIPER MODE: Phát hiện thông báo giờ vàng: ${dropTime}`);
-          
-          const timeStr = new Intl.DateTimeFormat('vi-VN', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-            hour: '2-digit', minute: '2-digit',
-            day: '2-digit', month: '2-digit', year: 'numeric'
-          }).format(new Date(dropTime));
-          
-          let msg = `<b>CHUẨN BỊ MỞ SLOT!</b>\n\n`;
-          msg += `⏱ <b>Thời gian dự kiến:</b> ${timeStr}\n`;
-          
-          const postUrl = `https://www.threads.net/@${TARGET_USERNAME}/post/${post.code}`;
-          const replyMarkup = {
-            inline_keyboard: [
-              [{ text: 'Xem bài viết thông báo', url: postUrl }]
-            ]
-          };
-          await sendTelegramMessage(msg, replyMarkup);
+        const postTimeMs = (postDetails.taken_at || 0) * 1000;
+        const postAgeHours = (Date.now() - postTimeMs) / (1000 * 60 * 60);
+
+        if (postAgeHours <= 24) {
+          const dropTime = extractDropTime(postDetails.caption || '');
+          if (dropTime && scanState.sniper_target_time !== dropTime) {
+            scanState.sniper_target_time = dropTime;
+            scanState.sniper_trigger_code = post.code;
+            scanState.sniper_completed = false; // Reset cờ hoàn thành
+            
+            logSuccess(`🎯 LÊN LỊCH SNIPER MODE: Phát hiện thông báo giờ vàng: ${dropTime}`);
+            
+            const timeStr = new Intl.DateTimeFormat('vi-VN', {
+              timeZone: 'Asia/Ho_Chi_Minh',
+              hour: '2-digit', minute: '2-digit',
+              day: '2-digit', month: '2-digit', year: 'numeric'
+            }).format(new Date(dropTime));
+            
+            let msg = `<b>CHUẨN BỊ MỞ SLOT!</b>\n\n`;
+            msg += `⏱ <b>Thời gian dự kiến:</b> ${timeStr}\n`;
+            
+            const postUrl = `https://www.threads.net/@${TARGET_USERNAME}/post/${post.code}`;
+            const replyMarkup = {
+              inline_keyboard: [
+                [{ text: 'Xem bài viết thông báo', url: postUrl }]
+              ]
+            };
+            await sendTelegramMessage(msg, replyMarkup);
+          }
+        } else {
+          // Bài quá cũ (>24h), chữ "tối nay" hoặc "nay" đã không còn hiệu lực
+          // logInfo(`  Bài viết ${post.code} quá cũ (${Math.round(postAgeHours)}h), bỏ qua tìm giờ vàng.`);
         }
       }
 
