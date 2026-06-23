@@ -524,11 +524,14 @@ async function main() {
       while (Date.now() < sniperEndTime) {
         logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((sniperEndTime - Date.now())/1000)}s)`);
         const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames);
-        if (found > 0) {
-          logSuccess(`🎯 SNIPER THÀNH CÔNG! Đã bắt được Celeb! Kết thúc Sniper Mode.`);
+        if (newlyFoundCelebs.some(c => c.invite_url !== null)) {
+          logSuccess(`🎯 SNIPER THÀNH CÔNG! Đã lấy được link Invite! Kết thúc Sniper Mode.`);
           newCelebsFound += found;
           scanState.sniper_completed = true; // Đánh dấu hoàn thành
           break;
+        } else if (found > 0) {
+          logInfo(`⏳ Vừa bắt được Celeb mới nhưng bị 404. Tiếp tục Sniper Mode chờ link...`);
+          newCelebsFound += found;
         }
         const minutesPassed = 60 - ((sniperEndTime - Date.now()) / (60 * 1000));
         if (minutesPassed <= 10) {
@@ -642,3 +645,4 @@ main().catch(err => {
   console.error(err);
   process.exit(1);
 });
+
