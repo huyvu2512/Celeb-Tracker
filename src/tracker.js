@@ -507,8 +507,8 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   const isTargetHour = targetHours.includes(vnHour);
   const shouldScanIg = isTargetHour && (scanState.last_ig_scan_signature !== dateSignature);
 
-  if (rapidApiKey) {
-    if (shouldScanIg) {
+  if (shouldScanIg) {
+    if (rapidApiKey) {
       log('');
       log('='.repeat(60));
       try {
@@ -585,6 +585,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
               invite_token: inviteToken,
               slot_limit: resolved.slot_limit,
               found_at: getVnTimeISOString(),
+              bot_action_time: getVnTimeISOString(),
               source_post_code: sourceText,
               source_type: sourceType,
               auto_add_results: autoAddResults,
@@ -610,11 +611,10 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
       }
     } else {
       log('');
-      logInfo(`⏳ Bỏ qua quét Instagram. Lịch quét mặc định: 0h, 6h, 12h, 18h VN (Hiện tại: ${vnHour}h).`);
+      logInfo('ℹ️ Đến giờ quét Instagram (0, 6, 12, 18h) nhưng bỏ qua vì không có RAPIDAPI_KEY.');
+      scanState.last_ig_scan = getVnTimeISOString();
+      scanState.last_ig_scan_signature = dateSignature;
     }
-  } else {
-    log('');
-    logInfo('ℹ️ Bỏ qua quét Instagram Stories vì không có RAPIDAPI_KEY trong environment.');
   }
 
   // ----------------------------------------------------------
