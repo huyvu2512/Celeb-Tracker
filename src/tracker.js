@@ -150,8 +150,9 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   if (includeBackup) {
     try {
       const backupPosts = await fetchProfilePosts(BACKUP_USERNAME);
-      if (backupPosts && backupPosts.length > 0) {
-        for (const backupPost of backupPosts) {
+      // Chỉ lấy 1 bài MỚI NHẤT từ trang phụ
+      const latestBackup = backupPosts && backupPosts.length > 0 ? [backupPosts[0]] : [];
+      for (const backupPost of latestBackup) {
           backupPost.reason = 'BACKUP PAGE (Mới nhất)';
           backupPost.author = BACKUP_USERNAME; // Đánh dấu author để fetch đúng url
 
@@ -163,7 +164,6 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
             postsToScan.push(backupPost);
             logInfo(`[Backup] Bổ sung bài viết của @${BACKUP_USERNAME} (${backupPost.code}) vào danh sách quét.`);
           }
-        }
       }
     } catch (err) {
       logWarning(`[Backup] Không thể quét trang phụ @${BACKUP_USERNAME}: ${err.message}`);
@@ -656,7 +656,9 @@ async function main() {
       const timeToWait = startTime - now;
       if (timeToWait <= 30 * 60 * 1000) {
         isInSniperMode = true;
-        logInfo(`🎯 Sắp đến giờ G! Đang đợi ${Math.round(timeToWait / 1000 / 60)} phút nữa để bắt đầu SPAM...`);
+        const vnStartStr = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(startTime));
+        const vnTargetStr = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(targetTime));
+        logInfo(`🎯 Sắp đến giờ G! Đang đợi ${Math.round(timeToWait / 1000 / 60)} phút nữa để bắt đầu SPAM (${vnStartStr} VN, giờ G = ${vnTargetStr} VN)...`);
         await delay(timeToWait); // Đóng băng chờ đến đúng mốc trước 3 phút
       }
     }
