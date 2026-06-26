@@ -8,6 +8,12 @@
 
 const { THREADS_HEADERS, logInfo, logWarning, logError, delay } = require('./utils');
 
+// Cache chi tiết bài viết trong RAM (TTL 30 giây) — tiết kiệm request trong vòng 5 phút
+const postDetailsCache = new Map(); // { postCode: { data, cachedAt } }
+const POST_DETAILS_CACHE_TTL_MS = 30 * 1000;
+
+const REQUEST_TIMEOUT_MS = 15000; // 15 giây timeout cho mọi HTTP request
+
 // ============================================================
 // Helpers nội bộ
 // ============================================================
@@ -18,16 +24,28 @@ const { THREADS_HEADERS, logInfo, logWarning, logError, delay } = require('./uti
  * @returns {Promise<string>} HTML string
  */
 async function fetchThreadsPage(url) {
-  const response = await fetch(url, {
-    headers: THREADS_HEADERS,
-    redirect: 'follow',
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      headers: THREADS_HEADERS,
+      redirect: 'follow',
+      signal: controller.signal,
+    });
 
-  if (!response.ok) {
-    throw new Error(`Fetch failed: ${response.status} ${response.statusText} for ${url}`);
+    if (!response.ok) {
+      throw new Error(`Fetch failed: ${response.status} ${response.statusText} for ${url}`);
+    }
+
+    return response.text();
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error(`Request timeout (${REQUEST_TIMEOUT_MS / 1000}s) for ${url}`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return response.text();
 }
 
 /**
@@ -171,6 +189,13 @@ async function fetchProfilePosts(username) {
  * @returns {Promise<{caption: string, author: string, replies: Array<{author: string, text: string, pk: string}>}>}
  */
 async function fetchPostDetails(username, postCode) {
+  // Kiểm tra cache trước (TTL 30 giây) — tránh fetch lại cùng 1 bài trong vòng 5 phút spam
+  const cached = postDetailsCache.get(postCode);
+  if (cached && Date.now() - cached.cachedAt < POST_DETAILS_CACHE_TTL_MS) {
+    logInfo(`  [CACHE] Dùng cache cho post ${postCode} (${Math.round((Date.now() - cached.cachedAt) / 1000)}s tuổi)`);
+    return cached.data;
+  }
+
   logInfo(`  Đang quét chi tiết post ${postCode}...`);
 
   const url = `https://www.threads.net/@${username}/post/${postCode}`;
@@ -219,12 +244,17 @@ async function fetchPostDetails(username, postCode) {
   logInfo(`  → Caption: ${mainCaption.substring(0, 80).replace(/\n/g, ' ')}...`);
   logInfo(`  → ${replies.length} bình luận tìm thấy`);
 
-  return {
+  const result = {
     caption: mainCaption,
     author: mainAuthor,
     taken_at: mainTakenAt,
     replies,
   };
+
+  // Lưu vào cache
+  postDetailsCache.set(postCode, { data: result, cachedAt: Date.now() });
+
+  return result;
 }
 
 /**

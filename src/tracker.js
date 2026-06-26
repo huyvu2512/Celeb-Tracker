@@ -55,33 +55,36 @@ const DRY_RUN = process.argv.includes('--dry-run');
 // Logic chính
 // ============================================================
 
-async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode = false, includeBackup = true) {
+async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode = false, includeBackup = true, skipRecovery = false) {
   let newCelebsFound = 0;
 
   // 1. Phục hồi Token cho Celeb bị 404 (Auto-Retry)
+  // Chỉ chạy ở lượt quét đầu, bỏ qua trong vòng lặp 5 phút để tiết kiệm request
   // ----------------------------------------------------------
-  for (const existingCeleb of celebs) {
-    if (existingCeleb.invite_url === null) {
-      logInfo(`[Recovery] Đang thử lấy lại link cho Celeb bị lỗi 404 từ trước: @${existingCeleb.username}...`);
-      const currentDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
-      if (currentDelay > 0) await delay(currentDelay);
+  if (!skipRecovery) {
+    for (const existingCeleb of celebs) {
+      if (existingCeleb.invite_url === null) {
+        logInfo(`[Recovery] Đang thử lấy lại link cho Celeb bị lỗi 404 từ trước: @${existingCeleb.username}...`);
+        const currentDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
+        if (currentDelay > 0) await delay(currentDelay);
 
-      const resolved = await resolveAppLink(existingCeleb.app_cam_url);
-      if (resolved) {
-        logSuccess(`  🎉 ĐÃ LẤY ĐƯỢC LINK CHO CELEB BỊ 404 TỪ TRƯỚC: @${existingCeleb.username}`);
-        
-        const inviteTokenMatch = resolved.invite_url.match(/invites\/([^?]+)/);
-        existingCeleb.invite_url = resolved.invite_url;
-        existingCeleb.invite_token = inviteTokenMatch ? inviteTokenMatch[1] : null;
-        existingCeleb.slot_limit = resolved.slot_limit;
-        if (resolved.display_name) {
-          existingCeleb.display_name = resolved.display_name;
+        const resolved = await resolveAppLink(existingCeleb.app_cam_url);
+        if (resolved) {
+          logSuccess(`  🎉 ĐÃ LẤY ĐƯỢC LINK CHO CELEB BỊ 404 TỪ TRƯỚC: @${existingCeleb.username}`);
+          
+          const inviteTokenMatch = resolved.invite_url.match(/invites\/([^?]+)/);
+          existingCeleb.invite_url = resolved.invite_url;
+          existingCeleb.invite_token = inviteTokenMatch ? inviteTokenMatch[1] : null;
+          existingCeleb.slot_limit = resolved.slot_limit;
+          if (resolved.display_name) {
+            existingCeleb.display_name = resolved.display_name;
+          }
+
+          newlyFoundCelebs.push({ ...existingCeleb, is_link_recovery: true });
+          newCelebsFound++;
+        } else {
+          logWarning(`  ⚠️ Vẫn lỗi 404 cho @${existingCeleb.username}, sẽ thử lại sau.`);
         }
-
-        newlyFoundCelebs.push({ ...existingCeleb, is_link_recovery: true });
-        newCelebsFound++;
-      } else {
-        logWarning(`  ⚠️ Vẫn lỗi 404 cho @${existingCeleb.username}, sẽ thử lại sau.`);
       }
     }
   }
@@ -371,7 +374,8 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
         logSuccess(`     Invite: ${resolved.invite_url}`);
       } else {
         // Trường hợp: Đã biết và đã có link -> Chỉ check xem có tăng slot hay không
-        await delay(REQUEST_DELAY_MS);
+        const slotDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
+        if (slotDelay > 0) await delay(slotDelay);
         const resolved = await resolveAppLink(appUrl);
         if (resolved) {
           if (resolved.slot_limit && existingCeleb.slot_limit && resolved.slot_limit > existingCeleb.slot_limit) {
@@ -717,8 +721,8 @@ async function main() {
       const loopEndTime = Date.now() + 5 * 60 * 1000;
       
       while (Date.now() < loopEndTime) {
-        // Không cần check backup mỗi vòng, chỉ check lần đầu là đủ
-        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, false);
+        // skipRecovery=true: bỏ qua vòng recovery 404, cũng không cần check backup nữa
+        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, false, true);
         
         const hasInviteUrl = newlyFoundCelebs.some(c => c.invite_url !== null);
         const hasSpeedAddSuccess = newlyFoundCelebs.some(c => c.auto_add_results && (c.auto_add_results.success || c.auto_add_results.skipped || c.auto_add_results.full));
