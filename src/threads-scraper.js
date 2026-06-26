@@ -158,8 +158,9 @@ async function fetchProfilePosts(username) {
     }
   }
 
-  logInfo(`Tìm thấy ${posts.length} bài viết trên profile @${username}`);
-  return posts;
+  const limitedPosts = posts.slice(0, 3);
+  logInfo(`Tìm thấy ${posts.length} bài viết trên profile @${username}, đang chọn ${limitedPosts.length} bài mới nhất để quét`);
+  return limitedPosts;
 }
 
 /**

@@ -148,18 +148,18 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
     try {
       const backupPosts = await fetchProfilePosts(BACKUP_USERNAME);
       if (backupPosts && backupPosts.length > 0) {
-        // Chỉ lấy bài viết MỚI NHẤT của trang phụ
-        const latestBackupPost = backupPosts[0];
-        latestBackupPost.reason = 'BACKUP PAGE (Mới nhất)';
-        latestBackupPost.author = BACKUP_USERNAME; // Đánh dấu author để fetch đúng url
+        for (const backupPost of backupPosts) {
+          backupPost.reason = 'BACKUP PAGE (Mới nhất)';
+          backupPost.author = BACKUP_USERNAME; // Đánh dấu author để fetch đúng url
 
-        const isResolved = scanState.scanned_posts[latestBackupPost.code] && scanState.scanned_posts[latestBackupPost.code].resolved;
-        if (!isResolved) {
-          if (!scanState.scanned_posts[latestBackupPost.code]) {
-            scanState.scanned_posts[latestBackupPost.code] = { resolved: false };
+          const isResolved = scanState.scanned_posts[backupPost.code] && scanState.scanned_posts[backupPost.code].resolved;
+          if (!isResolved) {
+            if (!scanState.scanned_posts[backupPost.code]) {
+              scanState.scanned_posts[backupPost.code] = { resolved: false };
+            }
+            postsToScan.push(backupPost);
+            logInfo(`[Backup] Bổ sung bài viết của @${BACKUP_USERNAME} (${backupPost.code}) vào danh sách quét.`);
           }
-          postsToScan.push(latestBackupPost);
-          logInfo(`[Backup] Bổ sung bài mới nhất của @${BACKUP_USERNAME} (${latestBackupPost.code}) vào danh sách quét.`);
         }
       }
     } catch (err) {
