@@ -760,36 +760,45 @@ async function main() {
         ]
       } : null;
 
+      // 1. Ưu tiên gửi Telegram trước (Thông báo chính)
       await sendTelegramMessage(msg, replyMarkup);
-      await sendDiscordMessage(c, postTimeStr, sourceTextStr);
-      await delay(500); // Tránh rate limit của Telegram khi gửi nhiều
+
+      let successMsg = '';
+      let shouldSendAutoAdd = false;
 
       if (c.auto_add_results) {
-        let successMsg = `🤖 <b>AUTO ADD CELEB</b>\n\n`;
+        successMsg = `🤖 <b>AUTO ADD CELEB</b>\n\n`;
         successMsg += `👤 <b>Tên:</b> ${c.display_name}\n`;
         successMsg += `🆔 <b>Username:</b> @ ${c.username}\n`;
         successMsg += `🎫 <b>Slot:</b> ${c.slot_limit ? c.slot_limit.toLocaleString('en-US') : 'Không rõ'}\n`;
 
-        let shouldSend = false;
         if (c.auto_add_results.success && c.auto_add_results.success.includes(c.username)) {
           successMsg += `✅ <b>Đã kết bạn thành công!</b>\n`;
-          shouldSend = true;
+          shouldSendAutoAdd = true;
         } else if (c.auto_add_results.full && c.auto_add_results.full.includes(c.username)) {
           successMsg += `❌ <b>Thất bại (Hết Slot hoặc Xếp hàng)</b>\n`;
-          shouldSend = true;
+          shouldSendAutoAdd = true;
         } else if (c.auto_add_results.skipped && c.auto_add_results.skipped.includes(c.username)) {
           successMsg += `⚠️ <b>Đã là Bạn bè từ trước!</b>\n`;
-          shouldSend = true;
+          shouldSendAutoAdd = true;
         }
 
-        if (shouldSend) {
+        if (shouldSendAutoAdd) {
           successMsg += `🕒 <b>Giờ đăng bài:</b> ${postTimeStr}\n`;
           successMsg += `⚡ <b>Giờ vồ mồi:</b> ${botTimeStr}\n`;
+          // Ưu tiên gửi Telegram tiếp (Thông báo Auto-add)
           await sendTelegramMessage(successMsg);
-          await sendDiscordAutoAddReport(c);
-          await delay(500);
         }
       }
+
+      await delay(500); // Tránh rate limit của Telegram khi gửi nhiều
+
+      // 2. Gửi Discord sau cùng
+      await sendDiscordMessage(c, postTimeStr, sourceTextStr);
+      if (shouldSendAutoAdd) {
+        await sendDiscordAutoAddReport(c);
+      }
+      await delay(500);
     }
 
   } else {

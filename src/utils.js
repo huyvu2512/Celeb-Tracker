@@ -199,6 +199,14 @@ async function sendTelegramMessage(text, replyMarkup = null) {
       const data = await response.json();
       logError(`Lỗi khi gửi Telegram: ${data.description}`);
       return false;
+    }
+    return true;
+  } catch (error) {
+    logError(`Lỗi kết nối Telegram: ${error.message}`);
+    return false;
+  }
+}
+
 // ============================================================
 // HTTP Headers giả lập Chrome để fetch Threads không bị chặn
 // ============================================================
