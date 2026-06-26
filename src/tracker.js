@@ -784,7 +784,7 @@ async function main() {
       const postTimeStr = `${d.getUTCHours().toString().padStart(2, '0')}:${d.getUTCMinutes().toString().padStart(2, '0')}:${d.getUTCSeconds().toString().padStart(2, '0')} ${d.getUTCDate().toString().padStart(2, '0')}/${(d.getUTCMonth() + 1).toString().padStart(2, '0')}/${d.getUTCFullYear()}`;
 
       const b = new Date(new Date(c.bot_action_time || Date.now()).getTime() + 7 * 60 * 60 * 1000);
-      const botTimeStr = `${b.getUTCHours().toString().padStart(2, '0')}:${b.getUTCMinutes().toString().padStart(2, '0')}:${b.getUTCSeconds().toString().padStart(2, '0')}`;
+      const currentTimeStr = `${b.getUTCHours().toString().padStart(2, '0')}:${b.getUTCMinutes().toString().padStart(2, '0')}:${b.getUTCSeconds().toString().padStart(2, '0')} ${b.getUTCDate().toString().padStart(2, '0')}/${(b.getUTCMonth() + 1).toString().padStart(2, '0')}/${b.getUTCFullYear()}`;
 
       let sourceTextStr = '';
       if (c.source_type === 'ig_story') sourceTextStr = 'Instagram (tin)';
@@ -799,8 +799,7 @@ async function main() {
       if (c.invite_token) {
         msg += `🔑 <b>Token:</b> <code>${c.invite_token}</code>\n`;
       }
-      msg += `🕒 <b>Giờ đăng bài:</b> ${postTimeStr}\n`;
-      msg += `⚡ <b>Giờ kết bạn:</b> ${botTimeStr}\n`;
+      msg += `🕒 <b>Thời gian:</b> ${currentTimeStr}\n`;
       msg += `📍 <b>Nguồn:</b> ${sourceTextStr}\n`;
 
       const replyMarkup = c.invite_url ? {
@@ -821,20 +820,21 @@ async function main() {
         successMsg += `🆔 <b>Username:</b> @ ${c.username}\n`;
         successMsg += `🎫 <b>Slot:</b> ${c.slot_limit ? c.slot_limit.toLocaleString('en-US') : 'Không rõ'}\n`;
 
+        let statusMsg = '';
         if (c.auto_add_results.success && c.auto_add_results.success.includes(c.username)) {
-          successMsg += `✅ <b>Đã kết bạn thành công!</b>\n`;
+          statusMsg = `✅ <b>Đã kết bạn thành công!</b>\n`;
           shouldSendAutoAdd = true;
         } else if (c.auto_add_results.full && c.auto_add_results.full.includes(c.username)) {
-          successMsg += `❌ <b>Thất bại (Hết Slot hoặc Xếp hàng)</b>\n`;
+          statusMsg = `❌ <b>Thất bại (Hết Slot hoặc Xếp hàng)</b>\n`;
           shouldSendAutoAdd = true;
         } else if (c.auto_add_results.skipped && c.auto_add_results.skipped.includes(c.username)) {
-          successMsg += `⚠️ <b>Đã là Bạn bè từ trước!</b>\n`;
+          statusMsg = `⚠️ <b>Đã là Bạn bè từ trước!</b>\n`;
           shouldSendAutoAdd = true;
         }
 
         if (shouldSendAutoAdd) {
-          successMsg += `🕒 <b>Giờ đăng bài:</b> ${postTimeStr}\n`;
-          successMsg += `⚡ <b>Giờ kết bạn:</b> ${botTimeStr}\n`;
+          successMsg += `🕒 <b>Thời gian:</b> ${currentTimeStr}\n`;
+          successMsg += statusMsg;
           // Ưu tiên gửi Telegram tiếp (Thông báo Auto-add)
           await sendTelegramMessage(successMsg);
         }
