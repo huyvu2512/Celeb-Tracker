@@ -405,7 +405,12 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
     scanState.sniper_trigger_code = newSniperPostCode;
     scanState.sniper_completed = false;
 
-    logSuccess(`🎯 CHÍNH THỨC LÊN LỊCH SNIPER MODE: Giờ vàng chốt là ${newSniperDropTime}`);
+    const vnTimeStr = new Intl.DateTimeFormat('vi-VN', {
+      timeZone: 'Asia/Ho_Chi_Minh',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    }).format(new Date(newSniperDropTime));
+    logSuccess(`🎯 CHÍNH THỨC LÊN LỊCH SNIPER MODE: Giờ vàng chốt là ${vnTimeStr} (VN)`);
 
     const timeStr = new Intl.DateTimeFormat('vi-VN', {
       timeZone: 'Asia/Ho_Chi_Minh',
