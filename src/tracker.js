@@ -233,6 +233,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
 
         if (postAgeHours <= 24) {
           const dropTime = extractDropTime(postDetails.caption || '', postTimeMs);
+          if (dropTime) {
             logSuccess(`🎯 PHÁT HIỆN THÔNG BÁO GIỜ VÀNG: ${dropTime} (Sẽ lên lịch nếu có thay đổi)`);
             newSniperDropTime = dropTime;
             newSniperPostCode = post.code;
@@ -648,22 +649,27 @@ async function main() {
   if (scanState.sniper_target_time && !scanState.sniper_completed) {
     const targetTime = new Date(scanState.sniper_target_time).getTime();
     const now = Date.now();
-    const timeDiff = targetTime - now;
+    const startTime = targetTime - 3 * 60 * 1000; // Trước 3 phút
+    const endTime = targetTime + 60 * 60 * 1000;  // Sau 1 tiếng (tròn 1h)
 
-    // Nếu cách giờ G dưới 10 phút và chưa qua giờ G
-    if (timeDiff > 0 && timeDiff <= 10 * 60 * 1000) {
+    if (now < startTime) {
+      const timeToWait = startTime - now;
+      if (timeToWait <= 30 * 60 * 1000) {
+        isInSniperMode = true;
+        logInfo(`🎯 Sắp đến giờ G! Đang đợi ${Math.round(timeToWait / 1000 / 60)} phút nữa để bắt đầu SPAM...`);
+        await delay(timeToWait); // Đóng băng chờ đến đúng mốc trước 3 phút
+      }
+    }
+
+    if ((now >= startTime || isInSniperMode) && Date.now() < endTime) {
       isInSniperMode = true;
-      logInfo(`🎯 Sắp đến giờ G! Đang đợi ${Math.round(timeDiff / 1000 / 60)} phút nữa tới thời khắc vàng...`);
-      await delay(timeDiff); // NGỦ ĐÔNG CHỜ ĐẾN GIỜ G
+      logSuccess(`🔥 KÍCH HOẠT SNIPER MODE SPAM LIÊN TỤC!`);
 
-      logSuccess(`🔥 GIỜ G ĐÃ ĐIỂM! KÍCH HOẠT SNIPER MODE TRONG 30 PHÚT!`);
-      const sniperEndTime = Date.now() + 30 * 60 * 1000;
+      while (Date.now() < endTime) {
+        // SPAM không delay trong 3 phút đầu (trước G) và 10 phút sau G
+        const isFastMode = Date.now() <= targetTime + 10 * 60 * 1000;
 
-      while (Date.now() < sniperEndTime) {
-        const minutesPassed = 30 - ((sniperEndTime - Date.now()) / (60 * 1000));
-        const isFastMode = minutesPassed <= 10;
-
-        logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((sniperEndTime - Date.now()) / 1000)}s) [FastMode: ${isFastMode}]`);
+        logInfo(`  -> Bắn tỉa: đang quét bài viết... (Còn ${Math.round((endTime - Date.now()) / 1000 / 60)} phút) [FastMode: ${isFastMode}]`);
         const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode, true);
         const hasInviteUrl = newlyFoundCelebs.some(c => c.invite_url !== null);
         const hasSpeedAddSuccess = newlyFoundCelebs.some(c => c.auto_add_results && (c.auto_add_results.success || c.auto_add_results.skipped || c.auto_add_results.full));
@@ -677,8 +683,9 @@ async function main() {
           logInfo(`⏳ Vừa bắt được Celeb mới nhưng bị 404. Tiếp tục Sniper Mode chờ link...`);
           newCelebsFound += found;
         }
+
         if (isFastMode) {
-          logInfo(`  -> [10p đầu] Chưa thấy link. Spam quét lại NGAY LẬP TỨC...`);
+          logInfo(`  -> [SPAM] Chưa thấy link. Spam quét lại NGAY LẬP TỨC...`);
         } else {
           logInfo(`  -> Chưa thấy link. Chờ 5 giây rồi quét lại...`);
           await delay(5000); // Rình 5 giây 1 lần
@@ -686,11 +693,10 @@ async function main() {
       }
 
       if (!scanState.sniper_completed) {
-        logWarning(`😢 Hết 30 phút Sniper Mode nhưng không bắt được Celeb nào.`);
+        logWarning(`😢 Hết thời gian Sniper Mode nhưng không bắt được Celeb nào.`);
         scanState.sniper_completed = true;
       }
-    } else if (timeDiff < 0 && timeDiff > -2 * 60 * 60 * 1000) {
-      // Nếu lỡ quá giờ 2 tiếng thì bỏ qua luôn (tránh kẹt)
+    } else if (now >= endTime) {
       scanState.sniper_completed = true;
     }
   }
