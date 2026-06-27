@@ -5,8 +5,8 @@
     "app_cam_url": "http://locket.cam/hieu_hjhj",
     "invite_url": "https://locket.camera/invites/y9U3NdB8kdWSG0WAdXzkSjCm8y6338fc1a15c676178a?type=UsernameLink",
     "invite_token": "y9U3NdB8kdWSG0WAdXzkSjCm8y6338fc1a15c676178a",
-    "slot_limit": 10000,
-    "found_at": "2026-06-27T10:21:13.000+07:00",
+    "slot_limit": 20000,
+    "found_at": "2026-06-27T12:00:12.865+07:00",
     "bot_action_time": "2026-06-27T10:30:48.706+07:00",
     "source_post_code": "DaEvTQKiXsN",
     "source_type": "reply"
