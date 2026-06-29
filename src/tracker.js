@@ -618,6 +618,13 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   }
 
   // ----------------------------------------------------------
+  if (newCelebsFound > 0) {
+    if (scanState.sniper_target_time && !scanState.sniper_completed) {
+      logSuccess(`🎯 Đã lấy được target link thành công! Huỷ bỏ / Kết thúc Sniper Mode.`);
+    }
+    scanState.sniper_completed = true;
+    scanState.sniper_target_time = null; // Huỷ giờ G
+  }
 
   return newCelebsFound;
 }
@@ -649,10 +656,12 @@ async function main() {
   logInfo(`Số celeb đã biết: ${knownUsernames.size}`);
   logInfo(`Số post đã quét: ${Object.keys(scanState.scanned_posts).length}`);
 
-  // 1. CHẠY MỘT LƯỢT QUÉT ĐẦU TIÊN ĐỂ CẬP NHẬT GIỜ G (NẾU CÓ)
-  let newCelebsFound = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, true);
-  
-  let isInSniperMode = false;
+  let newCelebsFound = 0;
+  try {
+    // 1. CHẠY MỘT LƯỢT QUÉT ĐẦU TIÊN ĐỂ CẬP NHẬT GIỜ G (NẾU CÓ)
+    newCelebsFound = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, true);
+    
+    let isInSniperMode = false;
 
   // ==========================================================
   // SNIPER WAIT LOGIC
@@ -854,19 +863,21 @@ async function main() {
     logInfo('Không tìm thấy celeb mới trong lần quét này.');
   }
 
-  if (!DRY_RUN) {
-    scanState.last_scan = getVnTimeISOString();
-    celebs.forEach(c => delete c.auto_add_results);
-    writeJsonFile('celebs.json', celebs);
-    writeJsonFile('scan_state.json', scanState);
-    logSuccess('Đã lưu celebs.json và scan_state.json');
-  } else {
-    logWarning('DRY-RUN: Không ghi file. Dữ liệu mới:');
-    console.log(JSON.stringify(celebs.slice(-newCelebsFound || undefined), null, 2));
-  }
+  } finally {
+    if (!DRY_RUN) {
+      scanState.last_scan = getVnTimeISOString();
+      celebs.forEach(c => delete c.auto_add_results);
+      writeJsonFile('celebs.json', celebs);
+      writeJsonFile('scan_state.json', scanState);
+      logSuccess('Đã lưu celebs.json và scan_state.json');
+    } else {
+      logWarning('DRY-RUN: Không ghi file. Dữ liệu mới:');
+      console.log(JSON.stringify(celebs.slice(-newCelebsFound || undefined), null, 2));
+    }
 
-  log('='.repeat(60));
-  log('🏁 Kết thúc quét');
+    log('='.repeat(60));
+    log('🏁 Kết thúc quét');
+  }
 }
 
 // Chạy
