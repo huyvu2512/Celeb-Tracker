@@ -142,7 +142,7 @@ async function fetchFacebookPostDetails(storyUrl, pageId) {
     await page.goto(storyUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     
     // Đợi 8 giây để Facebook load xong bình luận qua AJAX 
-    await new Promise(r => setTimeout(r, 8000));
+    await new Promise(r => setTimeout(r, 3000));
     
     // Lấy toàn bộ chữ trên trang.
     const fullText = await page.evaluate(() => document.body.innerText);
