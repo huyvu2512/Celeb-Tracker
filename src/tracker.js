@@ -11,6 +11,7 @@
  */
 
 const { fetchProfilePosts, fetchPostDetails, fetchAllProfilePostsViaPuppeteer } = require('./threads-scraper');
+const { fetchFacebookPosts, fetchFacebookPostDetails } = require('./fb-scraper');
 const { resolveAppLink } = require('./link-resolver');
 const {
   extractAppCamLinks,
@@ -42,6 +43,9 @@ const TARGET_USERNAME = Buffer.from('bG9ja2V0Y2FtZXJhdm4=', 'base64').toString()
 /** Tài khoản Threads phụ (Backup) */
 const BACKUP_USERNAME = Buffer.from('bG9ja2V0LmFzaWE=', 'base64').toString();
 
+/** Facebook Page cần quét */
+const FACEBOOK_PAGE_ID = 'locketwidgetvn';
+
 /** Link có sẵn từ trước (chưa mở), điền vào đây để rình lúc 21h */
 const PRE_EXISTING_LINK = '';
 
@@ -55,7 +59,7 @@ const DRY_RUN = process.argv.includes('--dry-run');
 // Logic chính
 // ============================================================
 
-async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode = false, includeBackup = true, skipRecovery = false) {
+async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, isFastMode = false, includeBackup = true, skipRecovery = false, forceRescan = false) {
   let newCelebsFound = 0;
 
   // 1. Phục hồi Token cho Celeb bị 404 (Auto-Retry)
@@ -99,14 +103,14 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
       profilePosts = await fetchAllProfilePostsViaPuppeteer(TARGET_USERNAME);
       if (!profilePosts || profilePosts.length === 0) {
         logWarning('⚠️ Puppeteer không lấy được bài viết (có thể bị chặn). Đang dùng fallback sang API quét thông thường...');
-        profilePosts = await fetchProfilePosts(TARGET_USERNAME);
+        profilePosts = await fetchProfilePosts(TARGET_USERNAME, 2);
       }
     } else {
-      profilePosts = await fetchProfilePosts(TARGET_USERNAME);
+      profilePosts = await fetchProfilePosts(TARGET_USERNAME, 2); // Lấy 2 bài mới nhất từ page chính
     }
   } catch (err) {
     logError(`Không thể quét profile @${TARGET_USERNAME}: ${err.message}`);
-    return 0; // Return 0 to avoid crashing, especially useful during Sniper Mode where we want to retry
+    return 0;
   }
 
   if (profilePosts.length === 0) {
@@ -120,26 +124,19 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   //    - Bài đã quét nhưng chưa resolve (resolved: false)
   // ----------------------------------------------------------
   const postsToScan = [];
-  const latestPostCode = profilePosts.length > 0 ? profilePosts[0].code : null;
 
+  // Mặc định luôn quét lại 2 bài mới nhất từ profile chính (để bắt comment mới / tăng slot)
   for (const post of profilePosts) {
     const state = scanState.scanned_posts[post.code];
-
     if (!state) {
-      // Bài mới chưa từng quét
+      scanState.scanned_posts[post.code] = { resolved: false };
       postsToScan.push({ ...post, reason: 'MỚI' });
-    } else if (state.resolved === false && post.code === latestPostCode) {
-      // Chỉ quét lại BÀI GẦN NHẤT (nếu chưa tìm thấy link)
-      postsToScan.push({ ...post, reason: 'QUÉT LẠI (BÀI MỚI NHẤT)' });
-    } else if (state.resolved === false) {
-      // Các bài cũ đã quét mà không có link -> Đánh dấu hoàn thành luôn để bỏ qua (bao gồm cả bài thông báo cũ nếu có bài mới hơn)
-      scanState.scanned_posts[post.code].resolved = true;
+    } else {
+      postsToScan.push({ ...post, reason: 'QUÉT LẠI' });
     }
-    // else: đã quét và đã resolve → bỏ qua
   }
 
-  // Dọn dẹp rác: Những bài viết quá cũ (không còn nằm trong danh sách profilePosts)
-  // nhưng vẫn bị kẹt ở trạng thái resolved: false thì ép sang true để JSON sạch sẽ
+  // Dọn dẹp rác
   const currentPostCodes = new Set(profilePosts.map(p => p.code));
   for (const code in scanState.scanned_posts) {
     if (scanState.scanned_posts[code].resolved === false && !currentPostCodes.has(code)) {
@@ -149,37 +146,34 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
 
   logInfo(`Số bài cần quét: ${postsToScan.length} (trong tổng ${profilePosts.length} bài trên profile)`);
 
-  // 3.5 Quét trang phụ (Backup Page) nếu được yêu cầu
+  // 3.5 Quét trang phụ Threads (Backup Page) — 1 bài mới nhất
   if (includeBackup) {
     try {
-      const backupPosts = await fetchProfilePosts(BACKUP_USERNAME);
-      // Lấy top 3 bài mới nhất từ trang phụ (thay vì chỉ 1)
-      const latestBackups = backupPosts && backupPosts.length > 0 ? backupPosts.slice(0, 3) : [];
-      for (const backupPost of latestBackups) {
-          backupPost.reason = 'BACKUP PAGE';
-          backupPost.author = BACKUP_USERNAME; // Đánh dấu author để fetch đúng url
-
-          const state = scanState.scanned_posts[backupPost.code];
-          if (!state) {
-            // Bài mới chưa từng quét
-            scanState.scanned_posts[backupPost.code] = { resolved: false };
-            postsToScan.push(backupPost);
-            logInfo(`[Backup] Bổ sung bài VIẾT MỚI của @${BACKUP_USERNAME} (${backupPost.code}) vào danh sách quét.`);
-          } else if (!state.resolved) {
-            // Bài đã quét nhưng chưa resolve
-            postsToScan.push(backupPost);
-            logInfo(`[Backup] Quét lại bài chưa resolve của @${BACKUP_USERNAME} (${backupPost.code}).`);
-          } else {
-            // Bài đã resolved → vẫn quét lại để check tăng slot (chỉ quét bài mới nhất)
-            if (backupPost === latestBackups[0]) {
-              backupPost.reason = 'BACKUP PAGE (Check slot)';
-              postsToScan.push(backupPost);
-              logInfo(`[Backup] Quét lại bài mới nhất của @${BACKUP_USERNAME} (${backupPost.code}) để check tăng slot.`);
-            }
-          }
+      const backupPosts = await fetchProfilePosts(BACKUP_USERNAME, 1);
+      for (const bp of backupPosts) {
+        bp.author = BACKUP_USERNAME;
+        const state = scanState.scanned_posts[bp.code];
+        bp.reason = !state ? 'BACKUP (Bài mới)' : 'BACKUP (Quét lại)';
+        if (!state) scanState.scanned_posts[bp.code] = { resolved: false };
+        postsToScan.push(bp);
       }
     } catch (err) {
-      logWarning(`[Backup] Không thể quét trang phụ @${BACKUP_USERNAME}: ${err.message}`);
+      logWarning(`[Backup] Lỗi quét @${BACKUP_USERNAME}: ${err.message}`);
+    }
+  }
+
+  // 3.6 Quét Facebook Page — 1 bài mới nhất
+  if (FACEBOOK_PAGE_ID) {
+    try {
+      const fbPosts = await fetchFacebookPosts(FACEBOOK_PAGE_ID, 1);
+      for (const fp of fbPosts) {
+        const state = scanState.scanned_posts[fp.code];
+        fp.reason = !state ? 'FACEBOOK (Bài mới)' : 'FACEBOOK (Quét lại)';
+        if (!state) scanState.scanned_posts[fp.code] = { resolved: false };
+        postsToScan.push(fp);
+      }
+    } catch (err) {
+      logWarning(`[Facebook] Lỗi quét facebook.com/${FACEBOOK_PAGE_ID}: ${err.message}`);
     }
   }
 
@@ -198,7 +192,7 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   for (const post of postsToScan) {
     log('');
     log(`📋 Quét post [${post.reason}]: ${post.code}`);
-    log(`   Caption: ${post.caption.substring(0, 100).replace(/\n/g, ' ')}...`);
+    if (post.caption) log(`   Caption: ${post.caption.substring(0, 100).replace(/\n/g, ' ')}...`);
 
     const currentDelay = isFastMode ? 0 : REQUEST_DELAY_MS;
     if (currentDelay > 0) await delay(currentDelay);
@@ -206,10 +200,14 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
     let postDetails;
     let postAuthor = post.author || TARGET_USERNAME;
     try {
-      postDetails = await fetchPostDetails(postAuthor, post.code);
+      // Xử lý khác nhau cho Threads vs Facebook
+      if (post.source === 'facebook') {
+        postDetails = await fetchFacebookPostDetails(post.storyUrl, post.author);
+      } else {
+        postDetails = await fetchPostDetails(postAuthor, post.code);
+      }
     } catch (err) {
       logError(`  Lỗi khi quét post ${post.code}: ${err.message}`);
-      // Đánh dấu chưa resolve để quét lại lần sau
       scanState.scanned_posts[post.code] = {
         resolved: false,
         error: err.message,
@@ -223,15 +221,18 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
     // Nguồn 1: Caption của bài viết
     const captionLinks = extractAppCamLinks(postDetails.caption);
     for (const url of captionLinks) {
-      foundTargets.push({ url, sourceType: 'caption', text: postDetails.caption });
+      const srcType = post.source === 'facebook' ? 'facebook' : 'caption';
+      foundTargets.push({ url, sourceType: srcType, text: postDetails.caption });
     }
 
-    // Nguồn 2: Bình luận của @appcameravn (chỉ chính chủ)
-    for (const reply of postDetails.replies) {
-      if (reply.author === postAuthor) {
-        const replyLinks = extractAppCamLinks(reply.text);
-        for (const url of replyLinks) {
-          foundTargets.push({ url, sourceType: 'reply', text: reply.text });
+    // Nguồn 2: Bình luận của page chính chủ (chỉ Threads, Facebook đã gộp vào caption)
+    if (post.source !== 'facebook') {
+      for (const reply of postDetails.replies) {
+        if (reply.author === postAuthor) {
+          const replyLinks = extractAppCamLinks(reply.text);
+          for (const url of replyLinks) {
+            foundTargets.push({ url, sourceType: 'reply', text: reply.text });
+          }
         }
       }
     }
@@ -745,8 +746,8 @@ async function main() {
       const loopEndTime = Date.now() + 5 * 60 * 1000;
       
       while (Date.now() < loopEndTime) {
-        // skipRecovery=true: bỏ qua vòng recovery 404, VẪN quét backup page
-        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, true, true);
+        // forceRescan=true: quét lại tất cả bài (2 Thread chính + 1 Thread phụ + 1 Facebook)
+        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, true, true, true);
         
         const hasInviteUrl = newlyFoundCelebs.some(c => c.invite_url !== null);
         const hasSpeedAddSuccess = newlyFoundCelebs.some(c => c.auto_add_results && (c.auto_add_results.success || c.auto_add_results.skipped || c.auto_add_results.full));

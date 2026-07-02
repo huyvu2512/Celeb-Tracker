@@ -140,7 +140,7 @@ function findAllPosts(obj, results = []) {
  * @param {string} username - Tên tài khoản Threads (VD: "appcameravn")
  * @returns {Promise<Array<{code: string, pk: string, caption: string, taken_at: number}>>}
  */
-async function fetchProfilePosts(username) {
+async function fetchProfilePosts(username, limit = 3) {
   logInfo(`Đang quét profile @${username}...`);
 
   const url = `https://www.threads.net/@${username}`;
@@ -176,7 +176,7 @@ async function fetchProfilePosts(username) {
     }
   }
 
-  const limitedPosts = posts.slice(0, 3);
+  const limitedPosts = posts.slice(0, limit);
   logInfo(`Tìm thấy ${posts.length} bài viết trên profile @${username}, đang chọn ${limitedPosts.length} bài mới nhất để quét`);
   return limitedPosts;
 }
