@@ -141,7 +141,7 @@ async function fetchFacebookPostDetails(storyUrl, pageId) {
     // Dùng domcontentloaded thay vì networkidle2 để tránh bị script FB phát hiện và redirect sang trang login
     await page.goto(storyUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     
-    // Đợi 8 giây để Facebook load xong bình luận qua AJAX 
+    // Đợi 3 giây để Facebook load xong bình luận qua AJAX 
     await new Promise(r => setTimeout(r, 3000));
     
     // Lấy toàn bộ chữ trên trang.
