@@ -40,7 +40,7 @@
 
 ## ✨ Tính Năng Nổi Bật
 
-- **🕵️‍♂️ Quét tự động đa nền tảng:** Lắng nghe và trích xuất dữ liệu bài đăng mới nhất từ Threads và Instagram Stories hoàn toàn tự động. Đồng thời theo dõi song song **nhiều trang mục tiêu cùng lúc** (Trang chính & Trang dự phòng).
+- **🕵️‍♂️ Quét tự động đa nền tảng:** Lắng nghe và trích xuất dữ liệu bài đăng mới nhất từ Threads, Facebook Pages và Instagram Stories hoàn toàn tự động. Đồng thời theo dõi song song **nhiều trang mục tiêu cùng lúc** (Trang chính, Trang dự phòng Threads & Trang Facebook).
 - **🎯 Sniper Mode (Chế độ Bắn Tỉa):** AI tự động phân tích ngôn ngữ tự nhiên (NLP) từ caption để phát hiện "Giờ Vàng". Khi đến giờ G (nhận diện trước 30 phút), hệ thống tự động khóa mục tiêu và chuyển sang trạng thái "Cuồng nộ": **Spam quét liên tục không độ trễ (0s)** để hớt tay trên mọi slot giới hạn! Bổ sung vòng lặp thần tốc 5 phút quét liên tục cho mọi chu kỳ hoạt động thông thường. Tích hợp **Early Exit** tự ngắt lập tức khi cắn link và khả năng **tự phục hồi** (Auto-Retry) dẻo dai lấy lại link khi gặp lỗi 404.
 - **⚡ Phân tích link siêu tốc:** Phân giải (resolve) trực tiếp link `App.cam` để lấy thông tin chi tiết (avatar, tên, giới hạn slot) theo thời gian thực mà không cần tải ứng dụng.
 - **🤖 Auto-Add Thần Tốc:** Tích hợp trình duyệt ảo tự động đăng nhập Web Dio, nhận diện giao diện và **click kết bạn bằng tọa độ** ngay giây đầu tiên phát hiện Celeb mới. Tự động nhận diện và bỏ qua các trạng thái "Full slot", "Đang xếp hàng", hoặc "Đã là bạn bè".
@@ -59,6 +59,7 @@
  ┣ 📂 src
  ┃ ┣ 📜 tracker.js          # File thực thi chính - Trái tim của toàn bộ hệ thống
  ┃ ┣ 📜 threads-scraper.js  # Tool cạo dữ liệu ẩn danh từ mạng xã hội Threads 
+ ┃ ┣ 📜 fb-scraper.js       # Tool thu thập dữ liệu ẩn danh từ Facebook Pages
  ┃ ┣ 📜 insta-scraper.js    # Tương tác với Instagram API thông qua RapidAPI
  ┃ ┣ 📜 link-resolver.js    # Trích xuất dữ liệu từ deep-link của Celeb Tracker
  ┃ ┣ 📜 auto-adder.js       # Module tự động đăng nhập Web Dio và kết bạn
