@@ -153,19 +153,29 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
   if (includeBackup) {
     try {
       const backupPosts = await fetchProfilePosts(BACKUP_USERNAME);
-      // Chỉ lấy 1 bài MỚI NHẤT từ trang phụ
-      const latestBackup = backupPosts && backupPosts.length > 0 ? [backupPosts[0]] : [];
-      for (const backupPost of latestBackup) {
-          backupPost.reason = 'BACKUP PAGE (Mới nhất)';
+      // Lấy top 3 bài mới nhất từ trang phụ (thay vì chỉ 1)
+      const latestBackups = backupPosts && backupPosts.length > 0 ? backupPosts.slice(0, 3) : [];
+      for (const backupPost of latestBackups) {
+          backupPost.reason = 'BACKUP PAGE';
           backupPost.author = BACKUP_USERNAME; // Đánh dấu author để fetch đúng url
 
-          const isResolved = scanState.scanned_posts[backupPost.code] && scanState.scanned_posts[backupPost.code].resolved;
-          if (!isResolved) {
-            if (!scanState.scanned_posts[backupPost.code]) {
-              scanState.scanned_posts[backupPost.code] = { resolved: false };
-            }
+          const state = scanState.scanned_posts[backupPost.code];
+          if (!state) {
+            // Bài mới chưa từng quét
+            scanState.scanned_posts[backupPost.code] = { resolved: false };
             postsToScan.push(backupPost);
-            logInfo(`[Backup] Bổ sung bài viết của @${BACKUP_USERNAME} (${backupPost.code}) vào danh sách quét.`);
+            logInfo(`[Backup] Bổ sung bài VIẾT MỚI của @${BACKUP_USERNAME} (${backupPost.code}) vào danh sách quét.`);
+          } else if (!state.resolved) {
+            // Bài đã quét nhưng chưa resolve
+            postsToScan.push(backupPost);
+            logInfo(`[Backup] Quét lại bài chưa resolve của @${BACKUP_USERNAME} (${backupPost.code}).`);
+          } else {
+            // Bài đã resolved → vẫn quét lại để check tăng slot (chỉ quét bài mới nhất)
+            if (backupPost === latestBackups[0]) {
+              backupPost.reason = 'BACKUP PAGE (Check slot)';
+              postsToScan.push(backupPost);
+              logInfo(`[Backup] Quét lại bài mới nhất của @${BACKUP_USERNAME} (${backupPost.code}) để check tăng slot.`);
+            }
           }
       }
     } catch (err) {
@@ -735,8 +745,8 @@ async function main() {
       const loopEndTime = Date.now() + 5 * 60 * 1000;
       
       while (Date.now() < loopEndTime) {
-        // skipRecovery=true: bỏ qua vòng recovery 404, cũng không cần check backup nữa
-        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, false, true);
+        // skipRecovery=true: bỏ qua vòng recovery 404, VẪN quét backup page
+        const found = await runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames, true, true, true);
         
         const hasInviteUrl = newlyFoundCelebs.some(c => c.invite_url !== null);
         const hasSpeedAddSuccess = newlyFoundCelebs.some(c => c.auto_add_results && (c.auto_add_results.success || c.auto_add_results.skipped || c.auto_add_results.full));
