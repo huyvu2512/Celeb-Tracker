@@ -121,6 +121,9 @@ async function fetchFacebookPosts(pageId, limit = 3) {
 async function fetchFacebookPostDetails(storyUrl, pageId) {
   if (!storyUrl) return { caption: "", replies: [] };
   
+  // Ép dùng m.facebook.com để giảm thiểu bị Facebook chặn hiển thị comment khi không đăng nhập
+  storyUrl = storyUrl.replace('www.facebook.com', 'm.facebook.com');
+  
   logInfo(`[Facebook] Đang lấy chi tiết bài viết và bình luận: ${storyUrl}`);
   let browser = null;
   
@@ -138,25 +141,8 @@ async function fetchFacebookPostDetails(storyUrl, pageId) {
     // Dùng domcontentloaded thay vì networkidle2 để tránh bị script FB phát hiện và redirect sang trang login
     await page.goto(storyUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     
-    // Tiêm CSS ẩn popup login nếu có
-    await page.evaluate(() => {
-      const style = document.createElement('style');
-      style.innerHTML = `
-        div[role="dialog"], 
-        div[aria-label="Đăng nhập vào Facebook"],
-        #login_popup_cta_form,
-        .x1n2onr6.x1ja2u2z.x1afcbsf {
-          display: none !important;
-        }
-        body {
-          overflow: auto !important;
-        }
-      `;
-      document.head.appendChild(style);
-    });
-    
-    // Đợi 5 giây để Facebook load xong bình luận qua AJAX 
-    await new Promise(r => setTimeout(r, 5000));
+    // Đợi 8 giây để Facebook load xong bình luận qua AJAX 
+    await new Promise(r => setTimeout(r, 8000));
     
     // Lấy toàn bộ chữ trên trang.
     const fullText = await page.evaluate(() => document.body.innerText);
