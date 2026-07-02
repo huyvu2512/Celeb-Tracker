@@ -63,7 +63,7 @@ async function fetchFacebookPosts(pageId, limit = 3) {
           }
         }
         
-        if (text && text.includes('Locket')) {
+        if (text) {
           let code = '';
           if (postUrl) {
             const match = postUrl.match(/posts\/([^/?]+)/);
@@ -92,7 +92,7 @@ async function fetchFacebookPosts(pageId, limit = 3) {
       return unique;
     });
     
-    logInfo(`[Facebook] Tìm thấy ${posts.length} bài viết hợp lệ (có chứa chữ Locket).`);
+    logInfo(`[Facebook] Tìm thấy ${posts.length} bài viết trên timeline.`);
     
     // Chuyển đổi định dạng cho giống với kết quả cũ
     const formattedPosts = posts.slice(0, limit).map(p => ({
@@ -101,9 +101,9 @@ async function fetchFacebookPosts(pageId, limit = 3) {
       taken_at: Math.floor(Date.now() / 1000), // Không lấy được giờ chính xác, dùng giờ hiện tại
       author: pageId,
       storyUrl: p.storyUrl,
-      // Lưu toàn bộ nội dung text vào caption để hệ thống tự extract link
+      // Lưu nội dung preview vào caption. Comment sẽ được lấy chi tiết ở hàm sau.
       caption: p.text,
-      comments: [] // Các comment thường hiển thị thẳng trên UI desktop
+      comments: [] 
     }));
     
     return formattedPosts;
@@ -117,14 +117,60 @@ async function fetchFacebookPosts(pageId, limit = 3) {
 
 /**
  * Lấy chi tiết bài viết (caption, bình luận). 
- * Vì Puppeteer đã lấy được toàn bộ text ở trên, hàm này chỉ trả về dữ liệu đã lấy (fake detail).
  */
 async function fetchFacebookPostDetails(storyUrl, pageId) {
-  // Trả về một object rỗng, logic extract link sẽ xử lý text trong caption ở trên
-  return {
-    caption: "",
-    replies: []
-  };
+  if (!storyUrl) return { caption: "", replies: [] };
+  
+  logInfo(`[Facebook] Đang lấy chi tiết bài viết và bình luận: ${storyUrl}`);
+  let browser = null;
+  
+  try {
+    browser = await puppeteer.launch({ 
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    const page = await browser.newPage();
+    // Mở rộng viewport để innerText không bị ngắt dòng URL
+    await page.setViewport({ width: 1920, height: 1080 });
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    // Dùng domcontentloaded thay vì networkidle2 để tránh bị script FB phát hiện và redirect sang trang login
+    await page.goto(storyUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    
+    // Tiêm CSS ẩn popup login nếu có
+    await page.evaluate(() => {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        div[role="dialog"], 
+        div[aria-label="Đăng nhập vào Facebook"],
+        #login_popup_cta_form,
+        .x1n2onr6.x1ja2u2z.x1afcbsf {
+          display: none !important;
+        }
+        body {
+          overflow: auto !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+    
+    // Đợi 5 giây để Facebook load xong bình luận qua AJAX 
+    await new Promise(r => setTimeout(r, 5000));
+    
+    // Lấy toàn bộ chữ trên trang.
+    const fullText = await page.evaluate(() => document.body.innerText);
+    
+    return {
+      caption: fullText,
+      replies: []
+    };
+  } catch (error) {
+    logWarning(`[Facebook] Lỗi lấy chi tiết post ${storyUrl}: ${error.message}`);
+    return { caption: "", replies: [] };
+  } finally {
+    if (browser) await browser.close();
+  }
 }
 
 module.exports = {

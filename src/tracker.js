@@ -237,6 +237,20 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
       }
     }
 
+    // Xóa trùng lặp target bằng username, bỏ qua các link không có username (như link invites)
+    const uniqueTargets = [];
+    const seenUsernames = new Set();
+    for (const target of foundTargets) {
+      const username = extractUsernameFromAppUrl(target.url);
+      if (username && !seenUsernames.has(username)) {
+        seenUsernames.add(username);
+        uniqueTargets.push(target);
+      }
+    }
+    // Ghi đè lại mảng foundTargets bằng mảng đã lọc
+    foundTargets.length = 0;
+    foundTargets.push(...uniqueTargets);
+
     if (foundTargets.length === 0) {
       logWarning(`  Không tìm thấy link App.cam trong post ${post.code}`);
 
@@ -408,6 +422,12 @@ async function runScanCycle(scanState, celebs, newlyFoundCelebs, knownUsernames,
     scanState.scanned_posts[post.code] = {
       resolved: anyResolved,
     };
+
+    // Nếu đã tìm thấy celeb mới hoặc có update slot, thì dừng luôn không cần quét các bài tiếp theo
+    if (newCelebsFound > 0) {
+      logSuccess(`Đã tìm thấy target link thành công! Dừng quét các bài viết/page còn lại để tiết kiệm thời gian.`);
+      break;
+    }
   }
 
   // --- XỬ LÝ THÔNG BÁO GIỜ VÀNG (Gửi 1 lần duy nhất cho giờ mới nhất) ---
