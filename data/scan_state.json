@@ -76,13 +76,13 @@
       "resolved": false
     },
     "pfbid033JbLHM3AjFREJHwnrbEMHSueLhW4BhzCLDy9UFYV4whCyMnJVSnousfdhSopdjFsl": {
-      "resolved": false
+      "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DaKuQBCggSf",
   "sniper_completed": true,
-  "last_scan": "2026-07-03T18:06:08.480+07:00",
+  "last_scan": "2026-07-03T18:36:09.157+07:00",
   "last_ig_scan": "2026-07-03T18:01:04.248+07:00",
   "last_ig_scan_signature": "2026-6-3-18"
 }
