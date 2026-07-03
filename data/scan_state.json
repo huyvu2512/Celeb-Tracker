@@ -77,12 +77,15 @@
     },
     "pfbid033JbLHM3AjFREJHwnrbEMHSueLhW4BhzCLDy9UFYV4whCyMnJVSnousfdhSopdjFsl": {
       "resolved": true
+    },
+    "pfbid0ykx9NBQot36F9abqQgYwXSsc3iRaJS27R1bsSog9ic4nau3DqtFUxGwKjBm4om8Kl": {
+      "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DaKuQBCggSf",
   "sniper_completed": true,
-  "last_scan": "2026-07-03T20:36:04.451+07:00",
+  "last_scan": "2026-07-03T21:06:07.094+07:00",
   "last_ig_scan": "2026-07-03T18:01:04.248+07:00",
   "last_ig_scan_signature": "2026-6-3-18"
 }
