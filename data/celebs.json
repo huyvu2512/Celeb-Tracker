@@ -70,12 +70,12 @@
     "source_type": "caption"
   },
   {
-    "username": "cuecamfamily",
-    "display_name": "Gia đình",
-    "app_cam_url": "https://locket.cam/cuecamfamily",
-    "invite_url": "https://locket.camera/invites/2GJKRoeBY5UlaZ7Ml1AGGkjeCJ13d09816d7926150ef?type=UsernameLink",
-    "invite_token": "2GJKRoeBY5UlaZ7Ml1AGGkjeCJ13d09816d7926150ef",
-    "slot_limit": 2000,
+    "username": "",
+    "display_name": "",
+    "app_cam_url": "",
+    "invite_url": "",
+    "invite_token": "",
+    "slot_limit": ,
     "found_at": "2026-06-20T05:00:00.000Z",
     "source_post_code": "DZy5ChcmOVH",
     "source_type": "caption"
