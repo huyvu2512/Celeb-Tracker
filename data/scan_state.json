@@ -67,7 +67,7 @@
       "resolved": true
     },
     "DaSBc2hmLgk": {
-      "resolved": false
+      "resolved": true
     },
     "pfbid02ZKczRVvSEEM4Et9bTxXTv2xok6w17jMcwq1cr366i88kReMKutA4HB95xNVRRCwRl": {
       "resolved": true
@@ -103,16 +103,25 @@
       "resolved": false
     },
     "Dae6XPyibBh": {
-      "resolved": false
+      "resolved": true
     },
     "pfbid0MW1BFnS6PiAiZyp44pZFwBga8ZiENUePNdNcjourc9JdbP4KKhSRVUT9PbQ14raxl": {
+      "resolved": true
+    },
+    "DafF7sYAhHA": {
+      "resolved": false
+    },
+    "DafGD0IiWHl": {
+      "resolved": false
+    },
+    "pfbid02HtY9ZqxCMDSSoJTzYVJcqkP28gMJbf1QqX6FQuDuKDmLPVCwF6GJrxvcBc6aK6Yhl": {
       "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DaKuQBCggSf",
   "sniper_completed": true,
-  "last_scan": "2026-07-07T15:36:08.554+07:00",
+  "last_scan": "2026-07-07T16:06:29.630+07:00",
   "last_ig_scan": "2026-07-07T12:01:21.713+07:00",
   "last_ig_scan_signature": "2026-6-7-12"
 }
