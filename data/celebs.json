@@ -5,8 +5,8 @@
     "app_cam_url": "https://locket.cam/anhuyungdung",
     "invite_url": "https://locket.camera/invites/L2F5rHtTMLYLX7zDPuhpXHtpSW23e670e7f280201094?type=UsernameLink",
     "invite_token": "L2F5rHtTMLYLX7zDPuhpXHtpSW23e670e7f280201094",
-    "slot_limit": 5000,
-    "found_at": "2026-07-07T18:59:59.000+07:00",
+    "slot_limit": 20000,
+    "found_at": "2026-07-08T20:00:00.580+07:00",
     "bot_action_time": "2026-07-07T19:01:14.487+07:00",
     "source_post_code": "DafangJmE7r",
     "source_type": "caption"
