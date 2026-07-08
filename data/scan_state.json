@@ -143,12 +143,15 @@
     },
     "DahjzHfGAgU": {
       "resolved": false
+    },
+    "pfbid0hZCeNsPr8o6UbeGpvQboozDffcCFbXSgjdWL3T6XWMvL6LzoQfu5C7vK8vif6x3Bl": {
+      "resolved": true
     }
   },
   "sniper_target_time": "2026-07-08T13:00:00.000Z",
   "sniper_trigger_code": "DahjzHfGAgU",
   "sniper_completed": false,
-  "last_scan": "2026-07-08T17:06:23.797+07:00",
+  "last_scan": "2026-07-08T17:36:14.837+07:00",
   "last_ig_scan": "2026-07-08T12:01:12.663+07:00",
   "last_ig_scan_signature": "2026-6-8-12"
 }
