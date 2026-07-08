@@ -133,19 +133,22 @@
       "resolved": true
     },
     "DafinRamLaP": {
-      "resolved": false
+      "resolved": true
     },
     "Dafj0pMCfQq": {
       "resolved": true
     },
     "pfbid02maoMrgbQokw4xz5cpFuKwHkrQm3EMMiDnK6gKKgmTnDKAsBvgtpT51t1NsC63rZWl": {
       "resolved": true
+    },
+    "DahjzHfGAgU": {
+      "resolved": false
     }
   },
-  "sniper_target_time": null,
-  "sniper_trigger_code": "DaKuQBCggSf",
-  "sniper_completed": true,
-  "last_scan": "2026-07-08T14:36:19.331+07:00",
+  "sniper_target_time": "2026-07-08T13:00:00.000Z",
+  "sniper_trigger_code": "DahjzHfGAgU",
+  "sniper_completed": false,
+  "last_scan": "2026-07-08T15:06:19.935+07:00",
   "last_ig_scan": "2026-07-08T12:01:12.663+07:00",
   "last_ig_scan_signature": "2026-6-8-12"
 }
