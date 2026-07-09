@@ -169,7 +169,7 @@
       "resolved": true
     },
     "pfbid031mvCMtx5Suru7uKxb9VkcZ9bgmhC7ppTfj83zP89HoPsrrqSLtWxm3RueWLS97Uvl": {
-      "resolved": true
+      "resolved": false
     },
     "DalMWfCGI_V": {
       "resolved": false
@@ -181,7 +181,7 @@
   "sniper_target_time": null,
   "sniper_trigger_code": "DahjzHfGAgU",
   "sniper_completed": true,
-  "last_scan": "2026-07-10T02:36:10.217+07:00",
+  "last_scan": "2026-07-10T03:06:20.432+07:00",
   "last_ig_scan": "2026-07-10T00:01:18.531+07:00",
   "last_ig_scan_signature": "2026-6-10-0"
 }
