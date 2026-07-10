@@ -1,11 +1,11 @@
 [
   {
     "username": "theflob.okechim",
-    "display_name": "theflob.okechim",
+    "display_name": "THE FLOB",
     "app_cam_url": "https://locket.cam/theflob.okechim",
-    "invite_url": null,
-    "invite_token": "lỗi 404",
-    "slot_limit": "Không rõ",
+    "invite_url": "https://locket.camera/invites/d627oZfBBUe6WPoVvVAhlvtJPEI23b4f4c397d69262e?type=UsernameLink",
+    "invite_token": "d627oZfBBUe6WPoVvVAhlvtJPEI23b4f4c397d69262e",
+    "slot_limit": 4500,
     "found_at": "2026-07-10T20:59:58.000+07:00",
     "bot_action_time": "2026-07-10T21:01:11.285+07:00",
     "source_post_code": "DanWu6DmIKx",
