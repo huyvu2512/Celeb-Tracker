@@ -202,16 +202,22 @@
       "resolved": true
     },
     "Dapr36DmN5M": {
-      "resolved": false
+      "resolved": true
     },
     "Dapr8LkGMFk": {
+      "resolved": true
+    },
+    "DaqOOjQmOwR": {
+      "resolved": true
+    },
+    "DaqOl33mNgs": {
       "resolved": false
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DanLETkGLpf",
   "sniper_completed": true,
-  "last_scan": "2026-07-11T23:36:06.232+07:00",
-  "last_ig_scan": "2026-07-11T18:01:13.624+07:00",
-  "last_ig_scan_signature": "2026-6-11-18"
+  "last_scan": "2026-07-12T00:06:22.781+07:00",
+  "last_ig_scan": "2026-07-12T00:01:16.100+07:00",
+  "last_ig_scan_signature": "2026-6-12-0"
 }
