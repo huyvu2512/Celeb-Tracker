@@ -190,7 +190,7 @@
       "resolved": true
     },
     "DanKsCYCRfM": {
-      "resolved": false
+      "resolved": true
     },
     "pfbid0FiqfAjiAarShU8KkL2VHkCxhYb8rH4fYFFrPBGzpoMsPzPwSaEFuJEPZDMfYzT4tl": {
       "resolved": true
@@ -205,7 +205,7 @@
   "sniper_target_time": null,
   "sniper_trigger_code": "DanLETkGLpf",
   "sniper_completed": true,
-  "last_scan": "2026-07-11T15:36:13.969+07:00",
+  "last_scan": "2026-07-11T16:06:16.902+07:00",
   "last_ig_scan": "2026-07-11T12:01:07.521+07:00",
   "last_ig_scan_signature": "2026-6-11-12"
 }
