@@ -245,12 +245,18 @@
     },
     "DaukMXEGNeB": {
       "resolved": true
+    },
+    "DavBiy-GOZ2": {
+      "resolved": false
+    },
+    "Dau_fxfCQJb": {
+      "resolved": false
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DaujmkZgkL6",
   "sniper_completed": true,
-  "last_scan": "2026-07-13T20:06:27.169+07:00",
+  "last_scan": "2026-07-13T20:36:08.753+07:00",
   "last_ig_scan": "2026-07-13T18:01:16.354+07:00",
   "last_ig_scan_signature": "2026-6-13-18"
 }
