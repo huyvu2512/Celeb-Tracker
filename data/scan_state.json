@@ -251,12 +251,15 @@
     },
     "Dau_fxfCQJb": {
       "resolved": false
+    },
+    "pfbid02VaBznWqfSKfQ1E6FLtNyH7aXCxrsB7Cc9xDE6RABPhWhjagGRG6vh88BtJ5GqaHyl": {
+      "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DaujmkZgkL6",
   "sniper_completed": true,
-  "last_scan": "2026-07-14T09:06:13.665+07:00",
+  "last_scan": "2026-07-14T09:36:07.892+07:00",
   "last_ig_scan": "2026-07-14T06:01:12.842+07:00",
   "last_ig_scan_signature": "2026-6-14-6"
 }
