@@ -268,7 +268,7 @@
       "resolved": true
     },
     "DazxAktgtBs": {
-      "resolved": false
+      "resolved": true
     },
     "DazzV-YCaio": {
       "resolved": true
@@ -284,12 +284,18 @@
     },
     "Da0OulOmGx3": {
       "resolved": true
+    },
+    "Da0Vn1DGDPN": {
+      "resolved": false
+    },
+    "Da0WBu2iWKU": {
+      "resolved": true
     }
   },
-  "sniper_target_time": null,
-  "sniper_trigger_code": "DazxAktgtBs",
-  "sniper_completed": true,
-  "last_scan": "2026-07-15T21:36:18.162+07:00",
+  "sniper_target_time": "2026-07-16T05:00:00.000Z",
+  "sniper_trigger_code": "Da0Vn1DGDPN",
+  "sniper_completed": false,
+  "last_scan": "2026-07-15T22:06:26.552+07:00",
   "last_ig_scan": "2026-07-15T18:01:15.005+07:00",
   "last_ig_scan_signature": "2026-6-15-18"
 }
