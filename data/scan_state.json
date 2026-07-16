@@ -295,7 +295,7 @@
       "resolved": true
     },
     "pfbid0yEhyHoar9yFCEJh92LfvuBnKXm3iAFbpb96Kgzt34bCVn6coJgCFVtThcMkyRhcdl": {
-      "resolved": false
+      "resolved": true
     },
     "Da1y0pEGJzt": {
       "resolved": true
@@ -307,10 +307,10 @@
       "resolved": true
     }
   },
-  "sniper_target_time": "2026-07-16T12:07:00.000Z",
+  "sniper_target_time": null,
   "sniper_trigger_code": "Da19xWJgsJH",
-  "sniper_completed": false,
-  "last_scan": "2026-07-16T17:36:11.734+07:00",
-  "last_ig_scan": "2026-07-16T12:01:12.479+07:00",
-  "last_ig_scan_signature": "2026-6-16-12"
+  "sniper_completed": true,
+  "last_scan": "2026-07-16T18:01:03.778+07:00",
+  "last_ig_scan": "2026-07-16T18:01:01.463+07:00",
+  "last_ig_scan_signature": "2026-6-16-18"
 }
