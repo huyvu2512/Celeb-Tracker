@@ -301,13 +301,16 @@
       "resolved": true
     },
     "Da19xWJgsJH": {
-      "resolved": false
+      "resolved": true
+    },
+    "Da2NNi5GIBc": {
+      "resolved": true
     }
   },
   "sniper_target_time": "2026-07-16T12:07:00.000Z",
   "sniper_trigger_code": "Da19xWJgsJH",
   "sniper_completed": false,
-  "last_scan": "2026-07-16T15:06:13.156+07:00",
+  "last_scan": "2026-07-16T15:36:07.086+07:00",
   "last_ig_scan": "2026-07-16T12:01:12.479+07:00",
   "last_ig_scan_signature": "2026-6-16-12"
 }
