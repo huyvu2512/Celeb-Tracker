@@ -5,8 +5,8 @@
     "app_cam_url": "https://locket.cam/hoangrob36",
     "invite_url": "https://locket.camera/invites/slE0Szp0QjbbqSEnLI7RiSmDGBe2ddf41a438835af69?type=UsernameLink",
     "invite_token": "slE0Szp0QjbbqSEnLI7RiSmDGBe2ddf41a438835af69",
-    "slot_limit": 3000,
-    "found_at": "2026-07-15T21:00:09.000+07:00",
+    "slot_limit": 10000,
+    "found_at": "2026-07-16T11:59:56.954+07:00",
     "bot_action_time": "2026-07-15T21:01:18.028+07:00",
     "source_post_code": "Da0OulOmGx3",
     "source_type": "caption"
