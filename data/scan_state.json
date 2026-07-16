@@ -283,8 +283,7 @@
       "resolved": true
     },
     "Da0OulOmGx3": {
-      "resolved": false,
-      "error": "Fetch failed: 429 Too Many Requests for https://www.threads.net/@locketcameravn/post/Da0OulOmGx3"
+      "resolved": true
     },
     "Da0Vn1DGDPN": {
       "resolved": false
@@ -302,7 +301,7 @@
   "sniper_target_time": "2026-07-16T05:00:00.000Z",
   "sniper_trigger_code": "Da0Vn1DGDPN",
   "sniper_completed": false,
-  "last_scan": "2026-07-16T08:06:14.870+07:00",
+  "last_scan": "2026-07-16T08:36:18.766+07:00",
   "last_ig_scan": "2026-07-16T06:01:10.706+07:00",
   "last_ig_scan_signature": "2026-6-16-6"
 }
