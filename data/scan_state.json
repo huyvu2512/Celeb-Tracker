@@ -313,7 +313,7 @@
       "resolved": false
     },
     "Da5S-JGGJqL": {
-      "resolved": false
+      "resolved": true
     },
     "Da5SjcECebj": {
       "resolved": true
@@ -323,12 +323,15 @@
     },
     "pfbid0kgVh47vwJYNex4B8TR5BZyxLqYi9T6z4p7WUHv83avVgsSuzwtSM3t8P51tC72YQl": {
       "resolved": true
+    },
+    "Da72STOGF_T": {
+      "resolved": false
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "Da19xWJgsJH",
   "sniper_completed": true,
-  "last_scan": "2026-07-18T19:35:55.026+07:00",
+  "last_scan": "2026-07-18T20:05:59.432+07:00",
   "last_ig_scan": "2026-07-18T18:00:50.258+07:00",
   "last_ig_scan_signature": "2026-6-18-18"
 }
