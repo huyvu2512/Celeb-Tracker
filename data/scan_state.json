@@ -328,22 +328,31 @@
       "resolved": true
     },
     "Da725rfCR3F": {
-      "resolved": false
+      "resolved": true
     },
     "pfbid02pXwQEnrm9vXGXx7anKC2ZutUZGr832513vvngkHSQBGCsDQyuYkdfoA9FJePCzkQl": {
       "resolved": true
     },
     "Da9K5eYmFB4": {
-      "resolved": false
+      "resolved": true
     },
     "Da90v0pmJGC": {
       "resolved": false
+    },
+    "Da-HKyxAsYQ": {
+      "resolved": false
+    },
+    "Da-HbChCdHK": {
+      "resolved": false
+    },
+    "pfbid033XpHjoo1gzjhMW5epxPGrTERNzrXNKnvUUJwh4FNraNizkSDaSDoTSB4ab46p8qWl": {
+      "resolved": true
     }
   },
-  "sniper_target_time": null,
-  "sniper_trigger_code": "Da19xWJgsJH",
-  "sniper_completed": true,
-  "last_scan": "2026-07-19T17:05:57.174+07:00",
+  "sniper_target_time": "2026-07-19T13:00:00.000Z",
+  "sniper_trigger_code": "Da-HbChCdHK",
+  "sniper_completed": false,
+  "last_scan": "2026-07-19T17:35:58.699+07:00",
   "last_ig_scan": "2026-07-19T12:00:53.365+07:00",
   "last_ig_scan_signature": "2026-6-19-12"
 }
