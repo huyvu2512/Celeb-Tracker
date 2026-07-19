@@ -325,7 +325,7 @@
       "resolved": true
     },
     "Da72STOGF_T": {
-      "resolved": false
+      "resolved": true
     },
     "Da725rfCR3F": {
       "resolved": false
@@ -335,12 +335,15 @@
     },
     "Da9K5eYmFB4": {
       "resolved": false
+    },
+    "Da90v0pmJGC": {
+      "resolved": false
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "Da19xWJgsJH",
   "sniper_completed": true,
-  "last_scan": "2026-07-19T14:06:04.330+07:00",
+  "last_scan": "2026-07-19T14:36:01.956+07:00",
   "last_ig_scan": "2026-07-19T12:00:53.365+07:00",
   "last_ig_scan_signature": "2026-6-19-12"
 }
