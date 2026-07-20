@@ -353,12 +353,15 @@
     },
     "pfbid0yWDaFzbT2CsZ4vvPssTwDyt4qiCXsSuTwBuWMZtKvCR2U9ngWGcJRXuW2s1m1hYql": {
       "resolved": true
+    },
+    "pfbid033MfHSfXGsZ1REAGLmy5u3zS1xVTTnsm6fYziUAVpLsb2SsEHwXhKYzLXtpWLLV8gl": {
+      "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "Da-HbChCdHK",
   "sniper_completed": true,
-  "last_scan": "2026-07-21T03:36:04.855+07:00",
+  "last_scan": "2026-07-21T04:06:01.952+07:00",
   "last_ig_scan": "2026-07-21T00:00:59.298+07:00",
   "last_ig_scan_signature": "2026-6-21-0"
 }
