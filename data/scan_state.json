@@ -385,19 +385,19 @@
       "resolved": true
     },
     "DbDweLzGCo3": {
-      "resolved": false
+      "resolved": true
     },
     "DbDwx9riSPZ": {
-      "resolved": false
+      "resolved": true
     },
     "pfbid02BSB19LEb1ZSyig27z1PV8tPfj9AkHiCLLxq7y2XqGsXDYENevyc9ea4Czg2HF8Cgl": {
-      "resolved": false
+      "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DbDPtMSAjMT",
   "sniper_completed": true,
-  "last_scan": "2026-07-21T22:00:55.347+07:00",
+  "last_scan": "2026-07-21T22:35:52.709+07:00",
   "last_ig_scan": "2026-07-21T18:00:53.541+07:00",
   "last_ig_scan_signature": "2026-6-21-18"
 }
