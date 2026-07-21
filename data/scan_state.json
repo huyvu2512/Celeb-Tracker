@@ -358,7 +358,7 @@
       "resolved": true
     },
     "DbDFaBSmA3F": {
-      "resolved": false
+      "resolved": true
     },
     "DbDFyjSCf5q": {
       "resolved": true
@@ -371,12 +371,15 @@
     },
     "pfbid0mN2nofLra4ZwVAWDUhuUMUUh993dSfpVCe8aHLRFMJCTHGXZYec7gqKePRbkZdXHl": {
       "resolved": true
+    },
+    "DbDYSIBmJp1": {
+      "resolved": false
     }
   },
   "sniper_target_time": "2026-07-21T14:00:00.000Z",
   "sniper_trigger_code": "DbDPtMSAjMT",
   "sniper_completed": false,
-  "last_scan": "2026-07-21T18:05:58.534+07:00",
+  "last_scan": "2026-07-21T18:36:00.890+07:00",
   "last_ig_scan": "2026-07-21T18:00:53.541+07:00",
   "last_ig_scan_signature": "2026-6-21-18"
 }
