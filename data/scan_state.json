@@ -373,16 +373,19 @@
       "resolved": true
     },
     "DbDYSIBmJp1": {
-      "resolved": false
+      "resolved": true
     },
     "DbDre7imOxB": {
+      "resolved": true
+    },
+    "DbDrgWzmGYq": {
       "resolved": true
     }
   },
   "sniper_target_time": null,
   "sniper_trigger_code": "DbDPtMSAjMT",
   "sniper_completed": true,
-  "last_scan": "2026-07-21T21:00:30.294+07:00",
+  "last_scan": "2026-07-21T21:35:41.509+07:00",
   "last_ig_scan": "2026-07-21T18:00:53.541+07:00",
   "last_ig_scan_signature": "2026-6-21-18"
 }
