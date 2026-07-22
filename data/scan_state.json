@@ -400,7 +400,7 @@
       "resolved": true
     },
     "DbF39QWCe6I": {
-      "resolved": false
+      "resolved": true
     },
     "pfbid02MKdqgmzFiTnzo3NKUdDVKC4VwGp6E7LrEDgGdXGyF2nqx5F5gka9f5gg4LSsmzovl": {
       "resolved": true
@@ -412,10 +412,10 @@
       "resolved": true
     }
   },
-  "sniper_target_time": "2026-07-23T05:00:00.000Z",
+  "sniper_target_time": null,
   "sniper_trigger_code": "DbF3ZxRmBmd",
-  "sniper_completed": false,
-  "last_scan": "2026-07-22T23:35:48.962+07:00",
-  "last_ig_scan": "2026-07-22T18:00:56.410+07:00",
-  "last_ig_scan_signature": "2026-6-22-18"
+  "sniper_completed": true,
+  "last_scan": "2026-07-23T00:00:54.088+07:00",
+  "last_ig_scan": "2026-07-23T00:00:51.259+07:00",
+  "last_ig_scan_signature": "2026-6-23-0"
 }
